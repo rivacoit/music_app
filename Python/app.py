@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from lyrics_analyzer import get_keywords_from_lyrics
+from addkeywordstofirebase import add_keywords_to_songs
 
 app = Flask(__name__)
 
@@ -15,4 +16,5 @@ def analyze_lyrics():
 
 if __name__ == '__main__':
     print('Starting Flask server...')
+    add_keywords_to_songs()
     app.run(debug=True)
