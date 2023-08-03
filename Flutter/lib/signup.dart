@@ -1,5 +1,4 @@
-// ignore_for_file: prefer_const_constructors
-
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import "package:music_app/components/textfield.dart";
@@ -73,6 +72,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailcontroller = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
   final TextEditingController _confirmcontroller = TextEditingController();
+  final TextEditingController _namecontroller = TextEditingController();
+
   void _signup() async {
     final String email = _emailcontroller.text.trim();
     final String password = _passwordcontroller.text.trim();
@@ -87,12 +88,13 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
     try {
+      //create user
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      print("successful");
-      // ignore: use_build_context_synchronously
+      User user = FirebaseAuth.instance.currentUser!;
+      user.updateDisplayName(_namecontroller.text.trim());
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -140,6 +142,14 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             SizedBox(
               height: 30,
+            ),
+            MyTextField(
+              controller: _namecontroller,
+              hintText: "Name",
+              obscureText: false,
+            ),
+            SizedBox(
+              height: 15,
             ),
             MyTextField(
               controller: _emailcontroller,

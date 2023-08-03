@@ -42,10 +42,13 @@ class MyTextField extends StatelessWidget {
               Radius.circular(0),
             ),
           ),
-          focusedBorder: UnderlineInputBorder(
+          focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: Color(0xFF232946),
               width: 3,
+            ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(0),
             ),
           ),
         ),

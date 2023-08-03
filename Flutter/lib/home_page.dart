@@ -22,14 +22,23 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: _profilered,
-              child: Text("profile"),
-            ),
-          ],
+      backgroundColor: Color(0xffd4d8f0),
+      body: SafeArea(
+        child: Container(
+          padding: EdgeInsets.all(25),
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  icon: Icon(Icons.person),
+                  iconSize: 40,
+                  color: Color(0xff232946),
+                  onPressed: _profilered,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
