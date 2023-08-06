@@ -15,7 +15,7 @@ class _LyricsAnalysisPageState extends State<LyricsAnalysisPage> {
 
   void _analyzeLyrics() async {
     // Implement the backend connection here
-    final String backendUrl = 'http://10.0.2.2:5000';
+    const String backendUrl = 'http://10.0.2.2:5000';
 
     final Map<String, String> data = {
       'lyrics': lyrics,
@@ -55,7 +55,7 @@ class _LyricsAnalysisPageState extends State<LyricsAnalysisPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -65,19 +65,19 @@ class _LyricsAnalysisPageState extends State<LyricsAnalysisPage> {
                   lyrics = value;
                 });
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter lyrics here...',
               ),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             ElevatedButton(
               onPressed: () {
                 _analyzeLyrics();
               },
-              child: Text('Analyze Lyrics'),
+              child: const Text('Analyze Lyrics'),
             ),
-            SizedBox(height: 10.0),
-            Text('Keywords:'),
+            const SizedBox(height: 10.0),
+            const Text('Keywords:'),
             Text(keywords),
           ],
         ),

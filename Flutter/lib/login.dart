@@ -3,8 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:music_app/home_page.dart';
-import 'package:music_app/nlp_page.dart';
-import 'package:music_app/search.dart';
 import 'package:music_app/signup.dart';
 import "package:music_app/components/textfield.dart";
 import 'package:music_app/components/buttons.dart';

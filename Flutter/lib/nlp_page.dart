@@ -1,9 +1,6 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:dart_sentiment/dart_sentiment.dart';
-import 'package:music_app/components/buttons.dart';
-import 'package:music_app/components/textfield.dart';
 
 class NlpPage extends StatefulWidget {
   const NlpPage({
@@ -54,13 +51,13 @@ class _NlpPageState extends State<NlpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        title: const Text(''),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             Text('Detected Emotion: $_detectedEmotion'),
           ],
         ),

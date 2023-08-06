@@ -26,7 +26,7 @@ class _ServerCommunicationPageState extends State<ServerCommunicationPage> {
           onPressed: () {
             _sendDataToServer();
           },
-          child: Text('Send Data to Server'),
+          child: const Text('Send Data to Server'),
         ),
       ),
     );

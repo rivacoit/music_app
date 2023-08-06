@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_app/profile.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,7 +13,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProfilePage(),
+        builder: (context) => const ProfilePage(),
       ),
     );
   }
@@ -22,18 +21,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffd4d8f0),
+      backgroundColor: const Color(0xffd4d8f0),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(25),
+          padding: const EdgeInsets.all(25),
           child: Column(
             children: [
               Align(
                 alignment: Alignment.topRight,
                 child: IconButton(
-                  icon: Icon(Icons.person),
+                  icon: const Icon(Icons.person),
                   iconSize: 40,
-                  color: Color(0xff232946),
+                  color: const Color(0xff232946),
                   onPressed: _profilered,
                 ),
               ),
