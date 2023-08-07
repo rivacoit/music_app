@@ -121,3 +121,39 @@ class LogoButton extends StatelessWidget {
     );
   }
 }
+
+class SettingsButton extends StatelessWidget {
+  final String text;
+  final Function()? func;
+  const SettingsButton({
+    super.key,
+    required this.text,
+    required this.func,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: func,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        padding: EdgeInsets.fromLTRB(13, 3, 0, 3),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Color(0xFFfffffe),
+            fontFamily: "Poppins",
+            fontWeight: FontWeight.normal,
+            fontSize: 12,
+            letterSpacing: 1,
+          ),
+        ),
+      ),
+    );
+  }
+}

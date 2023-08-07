@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, use_build_context_synchronously
 
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:music_app/home_page.dart';
 import 'package:music_app/login.dart';
 import 'package:music_app/lyrics_analysis_page.dart';
 import 'package:music_app/search.dart';
@@ -56,10 +56,19 @@ class _WelcomePageState extends State<WelcomePage> {
       idToken: googleAuth?.idToken,
     );
     await FirebaseAuth.instance.signInWithCredential(credential);
+    // final user = FirebaseAuth.instance.currentUser;
+    // if (user != null) {
+    //   for (final providerProfile in user.providerData) {
+    //     user.updateDisplayName(displayName).displayName;
+    //     final emailAddress = providerProfile.email;
+    //     final profilePhoto = providerProfile.photoURL;
+    //   }
+    // }
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SearchPage(),
+        builder: (context) => HomePage(),
       ),
     );
   }

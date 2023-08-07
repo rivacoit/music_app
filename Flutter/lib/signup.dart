@@ -95,6 +95,8 @@ class _SignUpPageState extends State<SignUpPage> {
       );
       User user = FirebaseAuth.instance.currentUser!;
       user.updateDisplayName(_namecontroller.text.trim());
+      user.updatePhotoURL(
+          "https://marvel-b1-cdn.bc0a.com/f00000000151180/sou.edu/academics/wp-content/uploads/sites/14/2016/07/placeholder-3.png");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
