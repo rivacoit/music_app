@@ -8,13 +8,13 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.layers import Dense, LSTM, Embedding, Bidirectional
+from keras.utils import to_categorical
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+from keras.optimizers import Adam
+from keras.models import Sequential
+from keras.callbacks import EarlyStopping
+from keras.layers import Dense, LSTM, Embedding, Bidirectional
 from sklearn.model_selection import KFold, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -28,10 +28,19 @@ from lime import lime_text
 from lime.lime_text import LimeTextExplainer
 import seaborn as sns
 
+nltk.download('omw-1.4')
+nltk.download('wordnet')
+
+import os
 # Read datasets
-train_data_path = 'Python/datasets/train.txt'
-test_data_path = 'Python/datasets/test.txt'
-val_data_path = 'Python/datasets/val.txt'
+# train_data_path = 'Python/datasets/train.txt'
+# test_data_path = 'Python/datasets/test.txt'
+# val_data_path = 'Python/datasets/val.txt'
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+train_data_path = os.path.join(current_dir, 'datasets', 'train.txt')
+test_data_path = os.path.join(current_dir, 'datasets', 'test.txt')
+val_data_path = os.path.join(current_dir, 'datasets', 'val.txt')
 
 df_train = pd.read_csv(train_data_path, names=['Text', 'Emotion'], sep=';')
 df_val = pd.read_csv(val_data_path, names=['Text', 'Emotion'], sep=';')
@@ -120,8 +129,8 @@ temp =df_test.copy()
 temp['stop_words'] = temp['Text'].apply(lambda x: len(set(x.split()) & set(stop_words)))
 temp.stop_words.value_counts()
 
-sns.set(font_scale=1.3)
-temp['stop_words'].plot(kind= 'hist')
+# sns.set(font_scale=1.3)
+# temp['stop_words'].plot(kind= 'hist')
 
 
 # -- VALIDATION DATASET --
@@ -408,3 +417,17 @@ def save_model(model_data, filename):
 
 
 save_model( RF, 'text_emotion.pkl')
+
+
+def load_model(filename):
+    with open(filename, 'rb') as f:
+        model = pickle.load(f)
+    return model
+
+def predict_text_emotion(model, text):
+    data = {'Text': [text]}
+    df = pd.DataFrame(data=data)
+    df = normalize_text(df)
+    text = df['Text'].values
+    y_pred = model.predict(text)
+    return y_pred[0]

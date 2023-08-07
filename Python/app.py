@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from lyrics_analyzer import get_keywords_from_lyrics
 from addkeywordstofirebase import add_keywords_to_songs
+from models import predict_text_emotion
 
 app = Flask(__name__)
 
@@ -13,6 +14,14 @@ def analyze_lyrics():
     # print(f'Extracted keywords: {keywords}')
 
     return jsonify({'keywords': list(keywords)})
+
+# @app.route('/', methods=['POST'])
+# def predict_emotion():
+#     data = request.get_json()
+#     text = data['text']
+#     emotion = predict_text_emotion(text)
+    
+#     return jsonify({'emotion': emotion})
 
 if __name__ == '__main__':
     print('Starting Flask server...')
