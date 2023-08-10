@@ -11,6 +11,7 @@ import 'package:music_app/components/buttons.dart';
 import 'package:music_app/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:music_app/update_profile.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -22,31 +23,14 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   User user = FirebaseAuth.instance.currentUser!;
   String profilePicLink = "";
+  String user_name = "";
+  String email = "";
   @override
   void initState() {
+    user_name = user.displayName!;
+    email = user.email!;
     profilePicLink = user.photoURL!;
     super.initState();
-  }
-
-  void _profilepicture() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxHeight: 512,
-      maxWidth: 512,
-      imageQuality: 90,
-    );
-
-    Reference ref =
-        FirebaseStorage.instance.ref().child("profiles/${user.uid}");
-
-    await ref.putFile(File(image!.path));
-
-    ref.getDownloadURL().then((value) async {
-      setState(() {
-        user.updatePhotoURL(value);
-        profilePicLink = value;
-      });
-    });
   }
 
   @override
@@ -56,91 +40,178 @@ class _ProfilePageState extends State<ProfilePage> {
         child: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.all(30),
-            child: Expanded(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 20,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: CircleAvatar(
+                    radius: 100,
+                    backgroundImage: NetworkImage(profilePicLink),
                   ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: CircleAvatar(
-                      radius: 100,
-                      backgroundImage: NetworkImage(profilePicLink),
-                    ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  user_name,
+                  style: TextStyle(
+                    color: Color(0xFf232946),
+                    fontFamily: "Poppins",
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    user.displayName!,
-                    style: TextStyle(
-                      color: Color(0xFf232946),
-                      fontFamily: "Poppins",
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  email,
+                  style: TextStyle(
+                    color: Color(0xFf232946),
+                    fontFamily: "Poppins",
+                    fontSize: 20,
+                    fontWeight: FontWeight.normal,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    user.email!,
-                    style: TextStyle(
-                      color: Color(0xFf232946),
-                      fontFamily: "Poppins",
-                      fontSize: 25,
-                      fontWeight: FontWeight.normal,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    maxLines: 1,
+                  maxLines: 1,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFf232946),
                   ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFf232946),
-                    ),
-                    padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Account",
-                            style: TextStyle(
-                              fontFamily: "Poppins",
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Color(0xfffffffe),
-                            ),
+                  padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Account",
+                          style: TextStyle(
+                            fontFamily: "Poppins",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Color(0xfffffffe),
                           ),
                         ),
-                        Divider(
-                          height: 20,
-                          thickness: 3,
-                          color: Color(0xfffffffe),
-                        ),
-                        SettingsButton(
-                          text: "Change Profile Picture",
-                          func: _profilepicture,
-                        ),
-                        SettingsButton(
-                          text: "Change Name",
-                          func: () {
-                            user.updateDisplayName("hi");
-                          },
-                        ),
-                        SettingsButton(
-                          text: "Change Email",
-                          func: () {
-                            user.updateDisplayName("hi");
-                          },
-                        ),
-                      ],
-                    ),
+                      ),
+                      Divider(
+                        height: 20,
+                        thickness: 3,
+                        color: Color(0xfffffffe),
+                      ),
+                      SettingsButton(
+                        text: "Update profile",
+                        func: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UpdateProfilePage(),
+                            ),
+                          );
+                        },
+                        icon: Icons.edit,
+                      ),
+                      SettingsButton(
+                        text: "Search history",
+                        func: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          );
+                        },
+                        icon: Icons.search,
+                      ),
+                      SettingsButton(
+                        text: "Playlists archive",
+                        func: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          );
+                        },
+                        icon: Icons.archive,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFf232946),
+                  ),
+                  padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Privacy and Security",
+                          style: TextStyle(
+                            fontFamily: "Poppins",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Color(0xfffffffe),
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        height: 20,
+                        thickness: 3,
+                        color: Color(0xfffffffe),
+                      ),
+                      SettingsButton(
+                        text: "Change password",
+                        func: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UpdateProfilePage(),
+                            ),
+                          );
+                        },
+                        icon: Icons.lock,
+                      ),
+                      SettingsButton(
+                        text: "Email notifications settings",
+                        func: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          );
+                        },
+                        icon: Icons.email,
+                      ),
+                      SettingsButton(
+                        text: "Push notifications settings",
+                        func: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          );
+                        },
+                        icon: Icons.notification_important,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),

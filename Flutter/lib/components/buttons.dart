@@ -125,23 +125,30 @@ class LogoButton extends StatelessWidget {
 class SettingsButton extends StatelessWidget {
   final String text;
   final Function()? func;
+  final IconData icon;
   const SettingsButton({
     super.key,
     required this.text,
     required this.func,
+    required this.icon,
   });
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return ElevatedButton.icon(
+      icon: Icon(
+        icon,
+        size: 15,
+        color: Colors.white,
+      ),
       onPressed: func,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        padding: EdgeInsets.fromLTRB(13, 3, 0, 3),
+        padding: EdgeInsets.fromLTRB(10, 3, 0, 3),
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      child: Align(
+      label: Align(
         alignment: Alignment.topLeft,
         child: Text(
           text,
@@ -149,7 +156,7 @@ class SettingsButton extends StatelessWidget {
             color: Color(0xFFfffffe),
             fontFamily: "Poppins",
             fontWeight: FontWeight.normal,
-            fontSize: 12,
+            fontSize: 15,
             letterSpacing: 1,
           ),
         ),
