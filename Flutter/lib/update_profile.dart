@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'dart:io';
 
@@ -52,12 +52,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
 
   void _saveprofile() async {
     if (_namecontroller.text.trim() != "") {
-      user.updateDisplayName(_namecontroller.text.trim());
+      await user.updateDisplayName(_namecontroller.text.trim());
     }
     if (_emailcontroller.text.trim() != "") {
-      user.updateEmail(_emailcontroller.text.trim());
+      await user.updateEmail(_emailcontroller.text.trim());
     }
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       PageTransition(
         type: PageTransitionType.leftToRight,
