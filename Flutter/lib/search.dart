@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:music_app/components/textfield.dart';
 import 'package:music_app/nlp_page.dart';
 
 class SearchPage extends StatefulWidget {
@@ -11,82 +12,75 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final TextEditingController _usercontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    void _search() {
+      return;
+    }
+
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        elevation: 0,
-        iconTheme: IconThemeData(
-          color: Color(0xFF232946),
-        ),
-        leading: BackButton(),
-        backgroundColor: Colors.transparent,
-      ),
       backgroundColor: Color(0xFFfffffe),
       body: Container(
-        padding: EdgeInsets.all(30.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 50.0,
-            ),
-            SizedBox(
-              width: 300,
-              height: 100,
-              child: TextField(
-                onSubmitted: (value) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NlpPage(userText: value),
+        padding: EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 20,
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      iconSize: 25,
+                      color: Color(0xFf232946),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                  );
-                },
-                autofocus: false,
-                style: TextStyle(
-                  fontFamily: "Poppins",
-                  fontSize: 30,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xffb8c1ec),
-                ),
-                decoration: InputDecoration(
-                  hintText: "tell your story...",
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 20.0,
                   ),
-                  alignLabelWithHint: true,
-                  filled: true,
-                  fillColor: Color(0xFF232946),
-                  hintStyle: TextStyle(
+                  Expanded(
+                    child: MyTextField(
+                      controller: _usercontroller,
+                      hintText: "Search",
+                      obscureText: false,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.search),
+                      iconSize: 25,
+                      color: Color(0xFf232946),
+                      onPressed: _search,
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: Text(
+                  "Recent searches",
+                  style: TextStyle(
                     fontFamily: "Poppins",
-                    fontSize: 30,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xffb8c1ec),
+                    color: Color(0xff232946),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
                   ),
-                  border: InputBorder.none,
+                  textAlign: TextAlign.right,
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Expanded(
-              child: Text(
-                "Recent searches",
-                style: TextStyle(
-                  fontFamily: "Poppins",
-                  color: Color(0xff232946),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
-                ),
-                textAlign: TextAlign.right,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

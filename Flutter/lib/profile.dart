@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
 import 'dart:io';
 import 'dart:typed_data';
@@ -8,7 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:music_app/components/buttons.dart';
 import 'package:music_app/home_page.dart';
+import 'package:music_app/signup.dart';
 import 'package:music_app/update_profile.dart';
+import 'package:music_app/welcome.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -33,6 +36,16 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: Color(0xFF232946),
+        ),
+        leading: BackButton(),
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -139,6 +152,174 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                         icon: Icons.archive,
                       ),
+                      SettingsButton(
+                        text: "Log out",
+                        func: () async {
+                          await showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(
+                                "Logging out",
+                                style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  color: Color(0xff232946),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              backgroundColor: Color(0xfffffffe),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(0)),
+                              ),
+                              content: Text(
+                                "Are you sure you want to log out?",
+                                style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  color: Color(0xff232946),
+                                ),
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStatePropertyAll<Color>(
+                                      Color(0xFF232946),
+                                    ),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                      color: Color(0xffb8c1ec),
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await FirebaseAuth.instance.signOut();
+                                    Navigator.pushReplacement(
+                                      context,
+                                      PageTransition(
+                                        type: PageTransitionType.leftToRight,
+                                        child: WelcomePage(),
+                                      ),
+                                    );
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStatePropertyAll<Color>(
+                                      Color(0xFF232946),
+                                    ),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Log out",
+                                    style: TextStyle(
+                                      color: Color(0xffb8c1ec),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: Icons.logout,
+                      ),
+                      SettingsButton(
+                        text: "Delete account",
+                        func: () async {
+                          await showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(
+                                "DELETING ACCOUNT",
+                                style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(0)),
+                              ),
+                              content: Text(
+                                "ARE YOU SURE YOU WANT TO DELETE YOUR ACCOUNT? THIS CANNOT BE REVERSED.",
+                                style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  color: Colors.redAccent,
+                                ),
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStatePropertyAll<Color>(
+                                      Color(0xFF232946),
+                                    ),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await user.delete();
+                                    Navigator.pushReplacement(
+                                      context,
+                                      PageTransition(
+                                        type: PageTransitionType.leftToRight,
+                                        child: WelcomePage(),
+                                      ),
+                                    );
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStatePropertyAll<Color>(
+                                      Colors.redAccent,
+                                    ),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "DELETE",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: Icons.delete_forever,
+                      )
                     ],
                   ),
                 ),
