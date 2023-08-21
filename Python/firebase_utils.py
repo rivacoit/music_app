@@ -2,8 +2,9 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 def initialize_firestore_app():
-    cred = credentials.Certificate("key.json")
-    firebase_admin.initialize_app(cred)
+    if not firebase_admin._apps:
+        cred = credentials.Certificate("key.json")
+        firebase_admin.initialize_app(cred)
     return firestore.client()
 
 def get_data(db, collection, emotion):

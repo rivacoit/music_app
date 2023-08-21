@@ -28,8 +28,8 @@ from lime import lime_text
 from lime.lime_text import LimeTextExplainer
 import seaborn as sns
 
-nltk.download('omw-1.4')
-nltk.download('wordnet')
+# nltk.download('omw-1.4')
+# nltk.download('wordnet')
 
 import os
 # Read datasets
@@ -46,23 +46,23 @@ df_train = pd.read_csv(train_data_path, names=['Text', 'Emotion'], sep=';')
 df_val = pd.read_csv(val_data_path, names=['Text', 'Emotion'], sep=';')
 df_test = pd.read_csv(test_data_path, names=['Text', 'Emotion'], sep=';')
 
-#print first 5 rows
-df_train.head()
+# #print first 5 rows
+# df_train.head()
 
-#print the shape of the data set
-print(df_train.shape)
+# #print the shape of the data set
+# print(df_train.shape)
 
-#print first 5 rows
-df_test.head()
+# #print first 5 rows
+# df_test.head()
 
-#print the shape of the data set
-print(df_test.shape)
+# #print the shape of the data set
+# print(df_test.shape)
 
-#print first 5 rows
-df_val.head()
+# #print first 5 rows
+# df_val.head()
 
-#print the shape of the data set
-print(df_val.shape)
+# #print the shape of the data set
+# print(df_val.shape)
 
 
 # -- TRAIN DATASET --
@@ -75,26 +75,26 @@ df_train.Emotion.value_counts() / df_train.shape[0] *100
 # plt.figure(figsize=(8,4))
 # sns.countplot(x='Emotion', data=df_train);
 
-#print the number of null values in each column
-df_train.isnull().sum()
+# #print the number of null values in each column
+# df_train.isnull().sum()
 
-#print the number of duplicated values
-df_train.duplicated().sum()
+# #print the number of duplicated values
+# df_train.duplicated().sum()
 
 #removing duplicated values
 index = df_train[df_train.duplicated() == True].index
 df_train.drop(index, axis = 0, inplace = True)
 df_train.reset_index(inplace=True, drop = True)
 
-#print the rows which are duplicated (duplicated in the text but with different emotions)
-df_train[df_train['Text'].duplicated() == True]
+# #print the rows which are duplicated (duplicated in the text but with different emotions)
+# df_train[df_train['Text'].duplicated() == True]
 
-#print some of those rows to check
-df_train[df_train['Text'] == df_train.iloc[7623]['Text']]
+# #print some of those rows to check
+# df_train[df_train['Text'] == df_train.iloc[7623]['Text']]
 
-df_train[df_train['Text'] == df_train.iloc[14313]['Text']]
+# df_train[df_train['Text'] == df_train.iloc[14313]['Text']]
 
-df_train[df_train['Text'] == df_train.iloc[13879]['Text']]
+# df_train[df_train['Text'] == df_train.iloc[13879]['Text']]
 
 #removing duplicated text
 index = df_train[df_train['Text'].duplicated() == True].index
@@ -118,11 +118,11 @@ df_test.Emotion.value_counts()
 # plt.figure(figsize=(8,4))
 # sns.countplot(x='Emotion', data=df_test);
 
-#print the number of null values in each column
-df_test.isnull().sum()
+# #print the number of null values in each column
+# df_test.isnull().sum()
 
-#print the number of duplicated values
-df_test.duplicated().sum()
+# #print the number of duplicated values
+# df_test.duplicated().sum()
 
 #Count the number of stopwords in the data
 temp =df_test.copy()
@@ -140,18 +140,18 @@ df_val.Emotion.value_counts()
 # plt.figure(figsize=(8,4))
 # sns.countplot(x='Emotion', data=df_val);
 
-#print the number of null values in each column
-df_val.isnull().sum()
+# #print the number of null values in each column
+# df_val.isnull().sum()
 
-#print the number of duplicated values
-df_val.duplicated().sum()
+# #print the number of duplicated values
+# df_val.duplicated().sum()
 
 #print the rows which are duplicated
-df_val[df_val['Text'].duplicated() == True]
+# df_val[df_val['Text'].duplicated() == True]
 
-df_val[df_val['Text'] == df_val.iloc[603]['Text']]
+# df_val[df_val['Text'] == df_val.iloc[603]['Text']]
 
-df_val[df_val['Text'] == df_val.iloc[1993]['Text']]
+# df_val[df_val['Text'] == df_val.iloc[1993]['Text']]
 
 #removing duplicated text
 index = df_val[df_val['Text'].duplicated() == True].index
@@ -328,14 +328,16 @@ y_pred=log_reg.predict(X_test)
 
 #calculate the accuracy
 log_reg_accuracy = accuracy_score(y_test, y_pred)
-print('Accuracy: ', log_reg_accuracy,'\n')
+# print('Accuracy: ', log_reg_accuracy,'\n')
 
 #calculate the F1 score
 f1_Score = get_F1(log_reg,X_test,y_test)
-pd.DataFrame(f1_Score, index=df_train.Emotion.unique(), columns=['F1 score'])
+# pd.DataFrame(f1_Score, index=df_train.Emotion.unique(), columns=['F1 score'])
 
 ##Classification Report
-print(classification_report(y_test, y_pred))
+# print(classification_report(y_test, y_pred))
+
+
 
 #Decision Tree Model
 DT = train_model(DecisionTreeClassifier(random_state = 0), X_train, y_train)
@@ -345,14 +347,14 @@ y_pred=DT.predict(X_test)
 
 #calculate the accuracy
 DT_accuracy = accuracy_score(y_test, y_pred)
-print('Accuracy: ', DT_accuracy,'\n')
+# print('Accuracy: ', DT_accuracy,'\n')
 
 #calculate the F1 score
 f1_Score = get_F1(DT,X_test,y_test)
-pd.DataFrame(f1_Score, index=df_train.Emotion.unique(), columns=['F1 score'])
+# pd.DataFrame(f1_Score, index=df_train.Emotion.unique(), columns=['F1 score'])
 
 ##Classification Report
-print(classification_report(y_test, y_pred))
+# print(classification_report(y_test, y_pred))
 
 #Support Vector Machine Model
 SVM = train_model(SVC(random_state = 0), X_train, y_train)
@@ -362,14 +364,14 @@ y_pred=SVM.predict(X_test)
 
 #calculate the accuracy
 SVM_accuracy = accuracy_score(y_test, y_pred)
-print('Accuracy: ', SVM_accuracy,'\n')
+# print('Accuracy: ', SVM_accuracy,'\n')
 
 #calculate the F1 score
 f1_Score = get_F1(SVM,X_test,y_test)
-pd.DataFrame(f1_Score, index=df_train.Emotion.unique(), columns=['F1 score'])
+# pd.DataFrame(f1_Score, index=df_train.Emotion.unique(), columns=['F1 score'])
 
 ##Classification Report
-print(classification_report(y_test, y_pred))
+# print(classification_report(y_test, y_pred))
 
 #Random Forest Model
 RF = train_model(RandomForestClassifier(random_state = 0), X_train, y_train)
@@ -379,14 +381,14 @@ y_pred=RF.predict(X_test)
 
 #calculate the accuracy
 RF_accuracy = accuracy_score(y_test, y_pred)
-print('Accuracy: ', RF_accuracy,'\n')
+# print('Accuracy: ', RF_accuracy,'\n')
 
 #calculate the F1 score
 f1_Score = get_F1(RF, X_test, y_test)
-pd.DataFrame(f1_Score, index=df_train.Emotion.unique(), columns=['F1 score'])
+# pd.DataFrame(f1_Score, index=df_train.Emotion.unique(), columns=['F1 score'])
 
 ##Classification Report
-print(classification_report(y_test, y_pred))
+# print(classification_report(y_test, y_pred))
 
 
 # -- RESULTS --
@@ -401,11 +403,11 @@ models.sort_values(by='Accuracy', ascending=False).reset_index().drop(['index'],
 #c_LR = make_pipeline(tfidf, clf)
 explainer_LR = LimeTextExplainer(class_names=RF.classes_)
 idx  = 15
-print("Actual Text : ", X_test[idx])
-print("Prediction : ", RF.predict(X_test)[idx])
-print("Actual :     ", y_test[idx])
+# print("Actual Text : ", X_test[idx])
+# print("Prediction : ", RF.predict(X_test)[idx])
+# print("Actual :     ", y_test[idx])
 exp = explainer_LR.explain_instance(X_test[idx], RF.predict_proba,top_labels=5)
-exp.show_in_notebook()
+# exp.show_in_notebook()
 
 
 # -- SAVE MODEL --
@@ -417,17 +419,3 @@ def save_model(model_data, filename):
 
 
 save_model( RF, 'text_emotion.pkl')
-
-
-def load_model(filename):
-    with open(filename, 'rb') as f:
-        model = pickle.load(f)
-    return model
-
-def predict_text_emotion(model, text):
-    data = {'Text': [text]}
-    df = pd.DataFrame(data=data)
-    df = normalize_text(df)
-    text = df['Text'].values
-    y_pred = model.predict(text)
-    return y_pred[0]

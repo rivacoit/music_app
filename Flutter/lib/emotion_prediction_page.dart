@@ -10,24 +10,24 @@ class EmotionPredictionPage extends StatefulWidget {
 }
 
 class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
-  String userInput = '';
+  String inputText = '';
   String predictedEmotion = '';
+  List<String> recommendedSongs = [];
 
-  void _predictEmotion() async {
+  Future<void> _predictEmotionAndFetchSongs() async {
     const String backendUrl = 'http://10.0.2.2:5000';
 
     final Map<String, String> data = {
-      'text': userInput,
+      'text': inputText,
     };
 
     try {
       final response = await http.post(
-        Uri.parse(backendUrl),
+        Uri.parse('$backendUrl/predict_emotion'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(data),
       );
 
-      // Check if the request went through successfully
       if (response.statusCode == 200) {
         final decodeResponse = json.decode(response.body);
 
@@ -37,14 +37,33 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
       } else {
         print('Error: ${response.statusCode}');
       }
+
+      final songsResponse = await http.get(
+        Uri.parse('$backendUrl/recommendation?emotion=$predictedEmotion'),
+      );
+
+      if (songsResponse.statusCode == 200) {
+        final decodeSongsResponse = json.decode(songsResponse.body);
+        setState(() {
+          recommendedSongs = List<String>.from(
+            decodeSongsResponse['recommended_songs'],
+          );
+        });
+      } else {
+        print('Error fecting recommended songs: ${songsResponse.statusCode}');
+      }
     } catch (e) {
-      print('Error: $e');
+      print('Error $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text('Emotion Prediction'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -53,23 +72,29 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
             TextField(
               onChanged: (value) {
                 setState(() {
-                  userInput = value;
+                  inputText = value;
                 });
               },
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Enter text here...',
               ),
             ),
-            const SizedBox(height: 10.0),
+            SizedBox(height: 10.0),
             ElevatedButton(
-              onPressed: () {
-                _predictEmotion();
-              },
-              child: const Text('Predict Emotion'),
+              onPressed: _predictEmotionAndFetchSongs,
+              child: Text('Predict'),
             ),
-            const SizedBox(height: 10.0),
-            const Text('Predicted Emotion:'),
-            Text(predictedEmotion),
+            SizedBox(height: 10.0),
+            Text('Predicted Emotion: $predictedEmotion'),
+            SizedBox(height: 10.0),
+            Text('Recommended Songs:'),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: recommendedSongs.length,
+              itemBuilder: (context, index) {
+                return Text(recommendedSongs[index]);
+              },
+            ),
           ],
         ),
       ),

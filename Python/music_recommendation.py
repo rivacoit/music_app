@@ -1,5 +1,9 @@
-data = get_all_data()
+from firebase_utils import initialize_firestore_app, get_all_data
+from lyrics_analyzer import get_stem
 
+db = initialize_firestore_app()
+
+data = get_all_data(db, "musicRecommendation")
 
 def fetch_music_based_on_emotion(emotion):
     return data[emotion]
@@ -26,5 +30,5 @@ def fetch_music_based_on_activity(text):
 
 
 # print(fetch_music_based_on_emotion('joy'))
-result = fetch_music_based_on_activity('playing')
-print(result)
+# result = fetch_music_based_on_activity('playing')
+# print(result)
