@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:music_app/components/buttons.dart';
 import 'package:music_app/home_page.dart';
 import 'package:music_app/signup.dart';
+import 'package:music_app/update_password.dart';
 import 'package:music_app/update_profile.dart';
 import 'package:music_app/welcome.dart';
 import 'package:page_transition/page_transition.dart';
@@ -246,7 +247,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 "DELETING ACCOUNT",
                                 style: TextStyle(
                                   fontFamily: "Poppins",
-                                  color: Colors.red,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -259,7 +260,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 "ARE YOU SURE YOU WANT TO DELETE YOUR ACCOUNT? THIS CANNOT BE REVERSED.",
                                 style: TextStyle(
                                   fontFamily: "Poppins",
-                                  color: Colors.redAccent,
+                                  color: Colors.black,
                                 ),
                               ),
                               actions: [
@@ -298,8 +299,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   style: ButtonStyle(
                                     backgroundColor:
                                         MaterialStatePropertyAll<Color>(
-                                      Colors.redAccent,
-                                    ),
+                                            Colors.black),
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
@@ -356,7 +356,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => UpdateProfilePage(),
+                              builder: (context) => UpdatePasswordPage(),
                             ),
                           );
                         },
