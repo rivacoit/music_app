@@ -12,7 +12,7 @@ class EmotionPredictionPage extends StatefulWidget {
 class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
   String inputText = '';
   String predictedEmotion = '';
-  List<String> recommendedSongs = [];
+  Map<String, dynamic> recommendedSongs = {};
 
   Future<void> _predictEmotionAndFetchSongs() async {
     const String backendUrl = 'http://10.0.2.2:5000';
@@ -29,8 +29,8 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
       );
 
       if (response.statusCode == 200) {
+        print(response.body);
         final decodeResponse = json.decode(response.body);
-
         setState(() {
           predictedEmotion = decodeResponse['emotion'];
         });
@@ -44,13 +44,12 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
 
       if (songsResponse.statusCode == 200) {
         final decodeSongsResponse = json.decode(songsResponse.body);
+        print(decodeSongsResponse);
         setState(() {
-          recommendedSongs = List<String>.from(
-            decodeSongsResponse['recommended_songs'],
-          );
+          recommendedSongs = decodeSongsResponse['recommended_songs'];
         });
       } else {
-        print('Error fecting recommended songs: ${songsResponse.statusCode}');
+        print('Error fetching recommended songs: ${songsResponse.statusCode}');
       }
     } catch (e) {
       print('Error $e');
@@ -62,40 +61,74 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Emotion Prediction'),
+        title: const Text('Emotion Prediction'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            TextField(
-              onChanged: (value) {
-                setState(() {
-                  inputText = value;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'Enter text here...',
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              TextField(
+                onChanged: (value) {
+                  setState(() {
+                    inputText = value;
+                  });
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Enter text here...',
+                ),
               ),
-            ),
-            SizedBox(height: 10.0),
-            ElevatedButton(
-              onPressed: _predictEmotionAndFetchSongs,
-              child: Text('Predict'),
-            ),
-            SizedBox(height: 10.0),
-            Text('Predicted Emotion: $predictedEmotion'),
-            SizedBox(height: 10.0),
-            Text('Recommended Songs:'),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: recommendedSongs.length,
-              itemBuilder: (context, index) {
-                return Text(recommendedSongs[index]);
-              },
-            ),
-          ],
+              const SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: _predictEmotionAndFetchSongs,
+                child: const Text('Predict'),
+              ),
+              const SizedBox(height: 10.0),
+              predictedEmotion.isNotEmpty
+                  ? SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Text('Predicted Emotion: $predictedEmotion'),
+                          const SizedBox(height: 10.0),
+                          const Text('Recommended Songs:'),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: recommendedSongs.length,
+                            itemBuilder: (context, index) {
+                              String title =
+                                  recommendedSongs.keys.elementAt(index);
+                              return Card(
+                                child: ListTile(
+                                    title: Text(title),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.play_arrow),
+                                      onPressed: () {
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //       builder: (context) =>
+                                        //           AudioPlayerScreen(
+                                        //             audioUrl:
+                                        //                 recommendedSongs[title]
+                                        //                     ['song_url'],
+                                        //             lyrics:
+                                        //                 recommendedSongs[title]
+                                        //                     ['lyrics'],
+                                        //             title: title,
+                                        //           )),
+                                        // );
+                                      },
+                                    )),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  : const Text('Tell me a story to predict your emotion'),
+            ],
+          ),
         ),
       ),
     );

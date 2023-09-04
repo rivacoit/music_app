@@ -5,12 +5,11 @@ db = initialize_firestore_app()
 
 def add_keywords_to_songs():
     collection_name = "musicRecommendation"
-    # emotion = ["angry", "sad", "joy"]
 
     emotions = {
-        "angry": "angry",
+        "anger": "anger",
         "joy": "joy",
-        "sad": "sad"
+        "sadness": "sadness"
     }
 
     for emotion, doc_name in emotions.items():

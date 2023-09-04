@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify
-# from lyrics_analyzer import get_keywords_from_lyrics
-from addkeywordstofirebase import add_keywords_to_songs
 import pickle
+
+from flask import Flask, request, jsonify
+
 from emotion_prediction import predict_text_emotion
 from music_recommendation import fetch_music_based_on_emotion
+
+# from lyrics_analyzer import get_keywords_from_lyrics
 
 app = Flask(__name__)
 
@@ -26,16 +28,19 @@ def predict_emotion():
     data = request.get_json()
     text = data['text']
     emotion = predict_text_emotion(text_emotion_model, text)
-    
+
     return jsonify({'emotion': emotion})
+
 
 @app.route('/recommendation', methods=['GET'])
 def recommend_song():
     emotion = request.args.get('emotion')
     recommend_songs = fetch_music_based_on_emotion(emotion)
+    # print(recommend_songs)
     return jsonify({'recommended_songs': recommend_songs})
+
 
 if __name__ == '__main__':
     print('Starting Flask server...')
     # add_keywords_to_songs()
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
