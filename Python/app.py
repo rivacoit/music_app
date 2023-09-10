@@ -43,4 +43,4 @@ def recommend_song():
 if __name__ == '__main__':
     print('Starting Flask server...')
     # add_keywords_to_songs()
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0',debug=True)

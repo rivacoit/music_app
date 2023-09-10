@@ -16,7 +16,8 @@ from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
 # nltk.download('omw-1.4')
-# nltk.download('wordnet')
+#import nltk
+#nltk.download('wordnet')
 
 # Read datasets
 # train_data_path = 'Python/datasets/train.txt'

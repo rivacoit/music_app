@@ -2,7 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:music_app/components/textfield.dart';
+import 'package:music_app/emotion_prediction_page.dart';
+import 'package:music_app/home_page.dart';
 import 'package:music_app/nlp_page.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -12,11 +15,17 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final TextEditingController _usercontroller = TextEditingController();
+  final TextEditingController _inputcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     void _search() {
-      return;
+      Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.fade,
+          child: EmotionPredictionPage(inputText: _inputcontroller.text.trim()),
+        ),
+      );
     }
 
     return Scaffold(
@@ -42,13 +51,19 @@ class _SearchPageState extends State<SearchPage> {
                       iconSize: 25,
                       color: Color(0xFf232946),
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            child: HomePage(),
+                            type: PageTransitionType.leftToRight,
+                          ),
+                        );
                       },
                     ),
                   ),
                   Expanded(
                     child: MyTextField(
-                      controller: _usercontroller,
+                      controller: _inputcontroller,
                       hintText: "Search",
                       obscureText: false,
                     ),
@@ -66,6 +81,9 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 20,
               ),
               Expanded(
                 child: Text(

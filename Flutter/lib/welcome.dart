@@ -42,7 +42,7 @@ class _WelcomePageState extends State<WelcomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EmotionPredictionPage(),
+        builder: (context) => HomePage(),
       ),
     );
   }
