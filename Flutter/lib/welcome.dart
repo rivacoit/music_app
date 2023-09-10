@@ -8,7 +8,7 @@ import 'package:music_app/emotion_prediction_page.dart';
 import 'package:music_app/home_page.dart';
 import 'package:music_app/login.dart';
 import 'package:music_app/lyrics_analysis_page.dart';
-import 'package:music_app/search.dart';
+import 'package:music_app/no%20for%20now/search.dart';
 import "package:music_app/signup.dart";
 import 'package:music_app/components/buttons.dart';
 
@@ -38,7 +38,19 @@ class _WelcomePageState extends State<WelcomePage> {
     );
   }
 
-  void guestred() async {
+  void _guestred() async {
+    try {
+      final userCredential = await FirebaseAuth.instance.signInAnonymously();
+      print("Signed in with temporary account.");
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "operation-not-allowed":
+          print("Anonymous auth hasn't been enabled for this project.");
+          break;
+        default:
+          print("Unknown error.");
+      }
+    }
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -155,7 +167,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 height: 15,
               ),
               TextButton(
-                onPressed: guestred,
+                onPressed: _guestred,
                 style: ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll<Color>(
                     Colors.transparent,

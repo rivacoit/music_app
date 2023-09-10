@@ -1,8 +1,12 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:music_app/anonymous_profile.dart';
+import 'package:music_app/components/listtiles.dart';
+import 'package:music_app/emotion_prediction_page.dart';
 import 'package:music_app/profile.dart';
-import 'package:music_app/search.dart';
+import 'package:music_app/no%20for%20now/search.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,21 +17,41 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   void _profilered() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ProfilePage(),
-      ),
-    );
+    if (!FirebaseAuth.instance.currentUser!.isAnonymous) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ProfilePage(),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AnonymousProfilePage(),
+        ),
+      );
+    }
   }
 
   void _searchred() async {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const SearchPage(),
+        builder: (context) => EmotionPredictionPage(),
       ),
     );
+  }
+
+  String greeting() {
+    var hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good Morning';
+    }
+    if (hour < 17) {
+      return 'Good Afternoon';
+    }
+    return 'Good Evening';
   }
 
   @override
@@ -64,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Tell your story...",
+                          "Search for songs",
                           style: TextStyle(
                             fontFamily: "Poppins",
                             fontWeight: FontWeight.bold,
@@ -89,6 +113,125 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  greeting(),
+                  style: TextStyle(
+                    fontFamily: "Poppins",
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Color(0xff232946),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xfffffffe),
+                ),
+                padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Explore",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Color(0xFf232946),
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      height: 20,
+                      thickness: 3,
+                      color: Color(0xFf232946),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      height: 200,
+                      child: ListView(
+                        // This next line does the trick.
+                        scrollDirection: Axis.horizontal,
+                        children: <Widget>[
+                          Container(
+                            width: 250,
+                            color: Color(0xFf232946),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 20,
+                              horizontal: 3,
+                            ),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Imposter Syndrome",
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 15,
+                                      color: Color(0xfffffffe),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    color: Color(0xfffffffe),
+                                  ),
+                                  SongTileOne(
+                                    songName: "this is me trying",
+                                    artistName: "Taylor Swift",
+                                  ),
+                                  SongTileOne(
+                                    songName: "Liability",
+                                    artistName: "Lorde",
+                                  ),
+                                  SongTileOne(
+                                    songName: "Easy on Me",
+                                    artistName: "Adele",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Container(
+                            width: 250,
+                            color: Color(0xFf232946),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Container(
+                            width: 250,
+                            color: Color(0xFf232946),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Container(
+                            width: 250,
+                            color: Color(0xFf232946),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

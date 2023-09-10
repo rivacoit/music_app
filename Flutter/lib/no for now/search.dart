@@ -23,7 +23,7 @@ class _SearchPageState extends State<SearchPage> {
         context,
         PageTransition(
           type: PageTransitionType.fade,
-          child: EmotionPredictionPage(inputText: _inputcontroller.text.trim()),
+          child: EmotionPredictionPage(),
         ),
       );
     }

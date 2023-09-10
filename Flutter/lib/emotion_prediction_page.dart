@@ -2,41 +2,24 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:music_app/search.dart';
+import 'package:music_app/home_page.dart';
 import 'dart:convert';
 
 import 'package:page_transition/page_transition.dart';
 
 class EmotionPredictionPage extends StatefulWidget {
-  final String inputText;
-
-  const EmotionPredictionPage({super.key, required this.inputText});
+  const EmotionPredictionPage({super.key});
 
   @override
   State<EmotionPredictionPage> createState() => _EmotionPredictionPageState();
 }
 
 class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
-  @override
-  void initState() {
-    super.initState();
-    _predictEmotionAndFetchSongs(widget.inputText);
-  }
-
-  void _search() {
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.fade,
-        child: SearchPage(),
-      ),
-    );
-  }
-
+  String inputText = '';
   String predictedEmotion = '';
   Map<String, dynamic> recommendedSongs = {};
 
-  Future<void> _predictEmotionAndFetchSongs(String inputText) async {
+  Future<void> _predictEmotionAndFetchSongs() async {
     const String backendUrl = 'http://127.0.0.1:5000';
 
     final Map<String, String> data = {
@@ -80,8 +63,6 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
 
   @override
   Widget build(BuildContext context) {
-    widget.inputText;
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Color(0xFFfffffe),
@@ -105,12 +86,60 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                       iconSize: 25,
                       color: Color(0xFf232946),
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            child: HomePage(),
+                            type: PageTransitionType.leftToRight,
+                          ),
+                        );
                       },
                     ),
                   ),
                   Expanded(
-                    child: Text(widget.inputText),
+                    child: SizedBox(
+                      width: 300,
+                      height: 40,
+                      child: TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            inputText = value;
+                          });
+                        },
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          hintText: "Tell your story",
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 15.0,
+                            vertical: 10.0,
+                          ),
+                          hintStyle: TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 15,
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xFF232946),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xFF232946),
+                              width: 2,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(0),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xFF232946),
+                              width: 2,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   SizedBox(
                     width: 5,
@@ -118,15 +147,17 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: IconButton(
-                      icon: const Icon(Icons.cancel),
+                      icon: const Icon(Icons.search),
                       iconSize: 25,
                       color: Color(0xFf232946),
-                      onPressed: _search,
+                      onPressed: _predictEmotionAndFetchSongs,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 10.0),
+              SizedBox(
+                height: 10,
+              ),
               predictedEmotion.isNotEmpty
                   ? SingleChildScrollView(
                       child: Column(
@@ -168,7 +199,19 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                         ],
                       ),
                     )
-                  : const Text('Tell me a story to predict your emotion'),
+                  : Column(
+                      children: const [
+                        Text(
+                          "Recent searches",
+                          style: TextStyle(
+                            fontFamily: "Poppins",
+                            color: Color(0xff232946),
+                            fontWeight: FontWeight.normal,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    )
             ],
           ),
         ),
