@@ -31,6 +31,13 @@ def predict_emotion():
 
     return jsonify({'emotion': emotion})
 
+@app.route('/recommendation_by_activity', methods=['POST'])
+def recommend_song_by_activity():
+    data = request.get_json()
+    user_input = data['text']
+    recommend_songs = fetch_music_based_on_activity(user_input)
+    return jsonify({'recommended_songs': recommend_songs})
+
 
 @app.route('/recommendation', methods=['GET'])
 def recommend_song():
