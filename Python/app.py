@@ -3,7 +3,7 @@ import pickle
 from flask import Flask, request, jsonify
 
 from emotion_prediction import predict_text_emotion
-from music_recommendation import fetch_music_based_on_emotion
+from music_recommendation import fetch_music_based_on_emotion, fetch_music_based_on_activity
 
 # from lyrics_analyzer import get_keywords_from_lyrics
 
@@ -36,6 +36,8 @@ def predict_emotion():
 def recommend_song():
     emotion = request.args.get('emotion')
     recommend_songs = fetch_music_based_on_emotion(emotion)
+    # text = request.args.get('text')
+    # recommend_songs = fetch_music_based_on_activity(text)
     # print(recommend_songs)
     return jsonify({'recommended_songs': recommend_songs})
 
