@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:music_app/home_page.dart';
 import 'package:music_app/welcome.dart';
 import 'package:page_transition/page_transition.dart';
@@ -18,6 +20,50 @@ class AnonymousProfilePage extends StatefulWidget {
 }
 
 class _AnonymousProfilePageState extends State<AnonymousProfilePage> {
+  void _linkWGoogle() async {
+    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      idToken: googleAuth?.idToken,
+    );
+    try {
+      final userCredential = await FirebaseAuth.instance.currentUser
+          ?.linkWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "provider-already-linked":
+          print("The provider has already been linked to the user.");
+          break;
+        case "invalid-credential":
+          print("The provider's credential is not valid.");
+          break;
+        case "email-already-in-use":
+          print("The account corresponding to the credential already exists, "
+              "or is already linked to a Firebase User.");
+          break;
+        // See the API reference for the full list of error codes.
+        default:
+          print(e);
+      }
+    }
+    print("merge success");
+    User user = FirebaseAuth.instance.currentUser!;
+    for (final providerProfile in user.providerData) {
+      // Name, email address, and profile photo URL
+      user.updateDisplayName(providerProfile.displayName);
+      user.updateEmail(providerProfile.email!);
+      user.updatePhotoURL(providerProfile.photoURL);
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,14 +166,7 @@ class _AnonymousProfilePageState extends State<AnonymousProfilePage> {
                       ),
                       SettingsButton(
                         text: "Sign in with Google",
-                        func: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(),
-                            ),
-                          );
-                        },
+                        func: _linkWGoogle,
                         icon: FontAwesomeIcons.google,
                       ),
                     ],

@@ -2,8 +2,10 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:music_app/anonymous_profile.dart';
 import 'package:music_app/components/listtiles.dart';
+import 'package:music_app/components/marquee.dart';
 import 'package:music_app/emotion_prediction_page.dart';
 import 'package:music_app/profile.dart';
 import 'package:music_app/no%20for%20now/search.dart';
@@ -91,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                           "Search for songs",
                           style: TextStyle(
                             fontFamily: "Poppins",
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.normal,
                             fontSize: 20,
                             color: Color(0xFf232946),
                           ),

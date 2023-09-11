@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:marquee/marquee.dart';
+import 'package:music_app/components/marquee.dart';
 import 'package:music_app/home_page.dart';
 import 'dart:convert';
 
@@ -65,7 +67,7 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Color(0xFFfffffe),
+      backgroundColor: Color(0xFFd4d8f0),
       body: Container(
         padding: EdgeInsets.symmetric(
           vertical: 10,
@@ -162,9 +164,20 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                   ? SingleChildScrollView(
                       child: Column(
                         children: [
-                          Text('Predicted Emotion: $predictedEmotion'),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Predicted Emotion: $predictedEmotion',
+                              style: TextStyle(
+                                fontFamily: "Poppins",
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
                           const SizedBox(height: 10.0),
-                          const Text('Recommended Songs:'),
                           ListView.builder(
                             shrinkWrap: true,
                             itemCount: recommendedSongs.length,
@@ -172,27 +185,48 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                               String title =
                                   recommendedSongs.keys.elementAt(index);
                               return Card(
+                                margin: EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 0,
+                                ),
                                 child: ListTile(
-                                    title: Text(title),
-                                    trailing: IconButton(
-                                      icon: const Icon(Icons.play_arrow),
-                                      onPressed: () {
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //       builder: (context) =>
-                                        //           AudioPlayerScreen(
-                                        //             audioUrl:
-                                        //                 recommendedSongs[title]
-                                        //                     ['song_url'],
-                                        //             lyrics:
-                                        //                 recommendedSongs[title]
-                                        //                     ['lyrics'],
-                                        //             title: title,
-                                        //           )),
-                                        // );
-                                      },
-                                    )),
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: Color(0xFF232946), width: 1),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  title: SizedBox(
+                                    width: 200.0,
+                                    child: MarqueeWidget(
+                                      direction: Axis.horizontal,
+                                      child: Text(
+                                        title,
+                                      ),
+                                    ),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: const Icon(
+                                      Icons.play_arrow,
+                                      color: Color(0xFF232946),
+                                    ),
+                                    onPressed: () {
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) =>
+                                      //           AudioPlayerScreen(
+                                      //             audioUrl:
+                                      //                 recommendedSongs[title]
+                                      //                     ['song_url'],
+                                      //             lyrics:
+                                      //                 recommendedSongs[title]
+                                      //                     ['lyrics'],
+                                      //             title: title,
+                                      //           )),
+                                      // );
+                                    },
+                                  ),
+                                ),
                               );
                             },
                           ),
@@ -201,6 +235,9 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                     )
                   : Column(
                       children: const [
+                        SizedBox(
+                          height: 10,
+                        ),
                         Text(
                           "Recent searches",
                           style: TextStyle(
