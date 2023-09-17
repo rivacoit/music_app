@@ -24,7 +24,7 @@ class MyTextField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hintText,
           contentPadding: EdgeInsets.symmetric(
-            horizontal: 25.0,
+            horizontal: 15.0,
             vertical: 15.0,
           ),
           hintStyle: TextStyle(

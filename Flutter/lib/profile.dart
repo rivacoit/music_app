@@ -41,7 +41,20 @@ class _ProfilePageState extends State<ProfilePage> {
         iconTheme: IconThemeData(
           color: Color(0xFF232946),
         ),
-        leading: BackButton(),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color(0xFF232946),
+          ),
+          onPressed: () {
+            Navigator.push(
+                context,
+                PageTransition(
+                  child: HomePage(),
+                  type: PageTransitionType.leftToRight,
+                ));
+          },
+        ),
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0,
       ),

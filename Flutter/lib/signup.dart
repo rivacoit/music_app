@@ -80,11 +80,12 @@ class _SignUpPageState extends State<SignUpPage> {
     final String confirm = _confirmcontroller.text.trim();
     if (password != confirm) {
       showDialog(
-          context: context,
-          builder: (context) => ErrorMessage(
-                header: "Signup Error",
-                bodyText: "Passwords do not match.",
-              ));
+        context: context,
+        builder: (context) => ErrorMessage(
+          header: "Signup Error",
+          bodyText: "Passwords do not match.",
+        ),
+      );
       return;
     }
     try {
