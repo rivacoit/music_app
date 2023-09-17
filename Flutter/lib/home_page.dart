@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:convert';
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
@@ -18,6 +20,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String exploreContent = "";
+
+  var messages = json.decode("");
+  void initState() {
+    messages.shuffle();
+    super.initState();
+  }
+
   void _profilered() async {
     if (!FirebaseAuth.instance.currentUser!.isAnonymous) {
       Navigator.push(
@@ -61,8 +71,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color(0xffeebbc3),
       body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.all(25),
+        bottom: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(
+            20,
+          ),
           child: Column(
             children: [
               Row(
@@ -132,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 30,
               ),
               Container(
                 decoration: BoxDecoration(
@@ -145,6 +158,110 @@ class _HomePageState extends State<HomePage> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Explore",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Color(0xFf232946),
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      height: 20,
+                      thickness: 3,
+                      color: Color(0xFf232946),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      height: 200,
+                      child: ListView(
+                        // This next line does the trick.
+                        scrollDirection: Axis.horizontal,
+                        children: <Widget>[
+                          Container(
+                            width: 250,
+                            color: Color(0xFf232946),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 20,
+                              horizontal: 3,
+                            ),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Imposter Syndrome",
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 15,
+                                      color: Color(0xfffffffe),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 30,
+                                    thickness: 1,
+                                    color: Color(0xfffffffe),
+                                  ),
+                                  SongTileOne(
+                                    songName: "this is me trying",
+                                    artistName: "Taylor Swift",
+                                  ),
+                                  SongTileOne(
+                                    songName: "Liability",
+                                    artistName: "Lorde",
+                                  ),
+                                  SongTileOne(
+                                    songName: "Easy on Me",
+                                    artistName: "Adele",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Container(
+                            width: 250,
+                            color: Color(0xFf232946),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Container(
+                            width: 250,
+                            color: Color(0xFf232946),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Container(
+                            width: 250,
+                            color: Color(0xFf232946),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xfffffffe),
+                ),
+                padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Popular searches",
                         style: TextStyle(
                           fontFamily: "Poppins",
                           fontWeight: FontWeight.bold,
