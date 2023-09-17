@@ -50,6 +50,7 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
       );
 
       if (songsResponse.statusCode == 200) {
+        print(songsResponse.body);
         final decodeSongsResponse = json.decode(songsResponse.body);
         print(decodeSongsResponse);
         setState(() {
