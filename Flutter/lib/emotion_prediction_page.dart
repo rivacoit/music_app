@@ -8,6 +8,8 @@ import 'package:music_app/home_page.dart';
 import 'dart:convert';
 
 import 'package:page_transition/page_transition.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EmotionPredictionPage extends StatefulWidget {
   const EmotionPredictionPage({super.key});
@@ -22,7 +24,7 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
   Map<String, dynamic> recommendedSongs = {};
 
   Future<void> _predictEmotionAndFetchSongs() async {
-    const String backendUrl = 'http://127.0.0.1:5000';
+    const String backendUrl = 'http://10.0.2.2:5000';
 
     final Map<String, String> data = {
       'text': inputText,
@@ -185,7 +187,7 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                             itemBuilder: (context, index) {
                               String title =
                                   recommendedSongs.keys.elementAt(index);
-                              return Card(
+                              return Container(
                                 margin: EdgeInsets.symmetric(
                                   vertical: 8,
                                   horizontal: 0,
@@ -207,24 +209,52 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                                   ),
                                   trailing: IconButton(
                                     icon: const Icon(
-                                      Icons.play_arrow,
+                                      Icons.add,
                                       color: Color(0xFF232946),
                                     ),
-                                    onPressed: () {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //       builder: (context) =>
-                                      //           AudioPlayerScreen(
-                                      //             audioUrl:
-                                      //                 recommendedSongs[title]
-                                      //                     ['song_url'],
-                                      //             lyrics:
-                                      //                 recommendedSongs[title]
-                                      //                     ['lyrics'],
-                                      //             title: title,
-                                      //           )),
-                                      // );
+                                    onPressed: () async {
+                                      try {
+                                        User? user =
+                                            FirebaseAuth.instance.currentUser;
+                                        if (user != null) {
+                                          String userId = user.uid;
+
+                                          DocumentReference userRef =
+                                              FirebaseFirestore.instance
+                                                  .collection('userInfo')
+                                                  .doc(userId);
+
+                                          // Add the song to the 'Saved Songs' subcollection
+                                          String title = recommendedSongs.keys
+                                              .elementAt(index);
+
+                                          DocumentReference savedSongRef =
+                                              userRef
+                                                  .collection('Saved Songs')
+                                                  .doc(title);
+
+                                          // Set the song data
+                                          await savedSongRef.set({
+                                            'title': title,
+                                            'timestamp':
+                                                FieldValue.serverTimestamp(),
+                                          });
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  '$title added to Saved Songs'),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        } else {}
+                                      } catch (e) {
+                                        print('Error adding song: $e');
+                                      }
+                                      // Add a function that will add the song to the user's collection ('Saved Songs')
+                                      // Ideally stored in a collection called userInfo with the doc name as the user.id
+                                      // Make sure to do checks to see whether or not song already exists/saved in the 'Saved Songs'
                                     },
                                   ),
                                 ),

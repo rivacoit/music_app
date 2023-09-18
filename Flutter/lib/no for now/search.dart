@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:music_app/components/textfield.dart';
 import 'package:music_app/emotion_prediction_page.dart';
 import 'package:music_app/home_page.dart';
-import 'package:music_app/nlp_page.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SearchPage extends StatefulWidget {
