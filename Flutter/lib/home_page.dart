@@ -26,6 +26,11 @@ class _HomePageState extends State<HomePage> {
       "songs": ["this is me trying", "Liability"],
       "artists": ["Taylor Swift", "idr"],
     },
+    {
+      "topic": "Friendship Fallout",
+      "songs": ["I Lost a Friend", "How to Lose a Friend"],
+      "artists": ["FINNEAS", "no clue tbh"],
+    },
   ];
   void initState() {
     exploreContent.shuffle();
