@@ -23,8 +23,8 @@ class _HomePageState extends State<HomePage> {
   List<Map> exploreContent = [
     {
       "topic": "Imposter Syndrome",
-      "songs": ["this is me trying", "Liability"],
-      "artists": ["Taylor Swift", "idr"],
+      "songs": ["this is me trying", "Liability", "test1", "test2", "test3"],
+      "artists": ["Taylor Swift", "idr", "test1", "test2", "test3"],
     },
     {
       "topic": "Friendship Fallout",
@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
       "artists": ["FINNEAS", "no clue tbh"],
     },
   ];
+
   void initState() {
     exploreContent.shuffle();
     super.initState();
@@ -155,6 +156,109 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(
                 height: 30,
+              ),
+
+              // Create Explore Container
+              Container(
+                color: Color(0xfffffffe),
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Explore",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                          color: Color(0xff232946),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      height: 200,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: exploreContent.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int index) {
+                          final topicData = exploreContent[index];
+                          return Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: index == 0 ? 0 : 10),
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Color(0xff232946),
+                            ),
+                            child: Column(
+                              children: [
+                                // Title
+                                Container(
+                                  child: Text(
+                                    topicData["topic"],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Color(0xfffffffe),
+                                    ),
+                                  ),
+                                ),
+
+                                SizedBox(height: 10),
+
+                                // Songs/Artists
+                                Flexible(
+                                  fit: FlexFit.tight,
+                                  child: Container(
+                                    width: 200,
+                                    child: ListView.separated(
+                                      itemCount: topicData["songs"].length,
+                                      separatorBuilder: (BuildContext context,
+                                          int songIndex) {
+                                        return SizedBox(height: 10);
+                                      },
+                                      itemBuilder: (BuildContext context,
+                                          int songIndex) {
+                                        return Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xfffffffe),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "${topicData["songs"][songIndex]}",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xff232946),
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              Text(
+                                                "${topicData["artists"][songIndex]}",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(0xff232946),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
