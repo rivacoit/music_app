@@ -31,10 +31,11 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/cat.jpg',
-              width: 200,
+              'assets/images/splash.png',
+              width: 300,
               height: 200,
             ),
           ],
