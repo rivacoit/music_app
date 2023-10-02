@@ -24,7 +24,7 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
   Map<String, dynamic> recommendedSongs = {};
 
   Future<void> _predictEmotionAndFetchSongs() async {
-    const String backendUrl = 'http://10.0.2.2:5000';
+    const String backendUrl = 'http://127.0.0.1:5000';
 
     final Map<String, String> data = {
       'text': inputText,
@@ -216,7 +216,7 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                                       try {
                                         User? user =
                                             FirebaseAuth.instance.currentUser;
-                                        if (user != null) {
+                                        if (user != null && !user.isAnonymous) {
                                           String userId = user.uid;
 
                                           DocumentReference userRef =
@@ -248,7 +248,16 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                                               duration: Duration(seconds: 2),
                                             ),
                                           );
-                                        } else {}
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  '$title failed to add to Saved Songs. Check that you are logged in.'),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        }
                                       } catch (e) {
                                         print('Error adding song: $e');
                                       }
