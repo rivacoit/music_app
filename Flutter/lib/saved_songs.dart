@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:music_app/components/marquee.dart';
 import 'package:music_app/profile.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -14,20 +15,30 @@ class SavedSongs extends StatefulWidget {
 }
 
 class _SavedSongsState extends State<SavedSongs> {
-  void getSavedSongs() {
+  QuerySnapshot? docSnapshot;
+
+  @override
+  void initState() {
+    super.initState();
+    getSavedSongs();
+  }
+
+  Future<void> getSavedSongs() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
-      if (user != null && !user.isAnonymous) {
-        String userId = user.uid;
 
-        DocumentReference userSavedSongs = FirebaseFirestore.instance
+      if (user != null && !user.isAnonymous) {
+        QuerySnapshot snapshot = await FirebaseFirestore.instance
             .collection('userInfo')
-            .doc(userId)
+            .doc(user.uid)
             .collection("Saved Songs")
-            .doc(title);
-      } else {}
+            .get();
+        setState(() {
+          docSnapshot = snapshot;
+        });
+      }
     } catch (e) {
-      print('Error retreiving saved songs: $e');
+      print('Error retreiving documents: $e');
     }
   }
 
@@ -70,86 +81,46 @@ class _SavedSongsState extends State<SavedSongs> {
               ),
               alignment: Alignment.center,
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: recommendedSongs.length,
-              itemBuilder: (context, index) {
-                String title = recommendedSongs.keys.elementAt(index);
-                return Container(
-                  margin: EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 0,
-                  ),
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Color(0xFF232946), width: 1),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    title: SizedBox(
-                      width: 200.0,
-                      child: MarqueeWidget(
-                        direction: Axis.horizontal,
-                        child: Text(
-                          title,
-                        ),
-                      ),
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(
-                        Icons.add,
-                        color: Color(0xFF232946),
-                      ),
-                      onPressed: () async {
-                        try {
-                          User? user = FirebaseAuth.instance.currentUser;
-                          if (user != null && !user.isAnonymous) {
-                            String userId = user.uid;
-
-                            DocumentReference userRef = FirebaseFirestore
-                                .instance
-                                .collection('userInfo')
-                                .doc(userId);
-
-                            // Add the song to the 'Saved Songs' subcollection
-                            String title =
-                                recommendedSongs.keys.elementAt(index);
-
-                            DocumentReference savedSongRef =
-                                userRef.collection('Saved Songs').doc(title);
-
-                            // Set the song data
-                            await savedSongRef.set({
-                              'title': title,
-                              'timestamp': FieldValue.serverTimestamp(),
-                            });
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('$title added to Saved Songs'),
-                                duration: Duration(seconds: 2),
+            docSnapshot == null
+                ? CircularProgressIndicator()
+                : docSnapshot!.docs.isEmpty
+                    ? Text('No Saved Songs Found')
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: docSnapshot!.docs.length,
+                        itemBuilder: (context, index) {
+                          final document = docSnapshot!.docs[index];
+                          return Container(
+                            margin: EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 0,
+                            ),
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Color(0xFF232946), width: 1),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    '$title failed to add to Saved Songs. Check that you are logged in.'),
-                                duration: Duration(seconds: 2),
+                              title: SizedBox(
+                                width: 200.0,
+                                child: MarqueeWidget(
+                                  direction: Axis.horizontal,
+                                  child: Text(
+                                    document.id, // Display doc name
+                                  ),
+                                ),
                               ),
-                            );
-                          }
-                        } catch (e) {
-                          print('Error adding song: $e');
-                        }
-                        // Add a function that will add the song to the user's collection ('Saved Songs')
-                        // Ideally stored in a collection called userInfo with the doc name as the user.id
-                        // Make sure to do checks to see whether or not song already exists/saved in the 'Saved Songs'
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
+                              trailing: IconButton(
+                                icon: const Icon(
+                                  Icons.remove_circle,
+                                  color: Color(0xFF232946),
+                                ),
+                                onPressed: () async {},
+                              ),
+                            ),
+                          );
+                        },
+                      ),
           ],
         ),
       ),

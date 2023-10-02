@@ -25,6 +25,9 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
 
   Future<void> _predictEmotionAndFetchSongs() async {
     const String backendUrl = 'http://127.0.0.1:5000';
+    // Addresses
+    // Android: http://10.0.2.2:5000
+    // iOS: http://127.0.0.1:5000
 
     final Map<String, String> data = {
       'text': inputText,
