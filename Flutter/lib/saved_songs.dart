@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/components/marquee.dart';
+import 'package:music_app/details_page.dart';
 import 'package:music_app/home_page.dart';
 import 'package:music_app/profile.dart';
 import 'package:page_transition/page_transition.dart';
@@ -95,7 +96,8 @@ class _SavedSongsState extends State<SavedSongs> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => HomePage()));
+                                      builder: (context) =>
+                                          DetailsPage(songInfo: document.id)));
                             },
                             child: Container(
                               margin: EdgeInsets.symmetric(
