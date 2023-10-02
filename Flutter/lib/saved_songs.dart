@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/components/marquee.dart';
+import 'package:music_app/home_page.dart';
 import 'package:music_app/profile.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -16,6 +17,7 @@ class SavedSongs extends StatefulWidget {
 
 class _SavedSongsState extends State<SavedSongs> {
   QuerySnapshot? docSnapshot;
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -25,12 +27,10 @@ class _SavedSongsState extends State<SavedSongs> {
 
   Future<void> getSavedSongs() async {
     try {
-      User? user = FirebaseAuth.instance.currentUser;
-
-      if (user != null && !user.isAnonymous) {
+      if (user != null && !user!.isAnonymous) {
         QuerySnapshot snapshot = await FirebaseFirestore.instance
             .collection('userInfo')
-            .doc(user.uid)
+            .doc(user!.uid)
             .collection("Saved Songs")
             .get();
         setState(() {
@@ -90,32 +90,55 @@ class _SavedSongsState extends State<SavedSongs> {
                         itemCount: docSnapshot!.docs.length,
                         itemBuilder: (context, index) {
                           final document = docSnapshot!.docs[index];
-                          return Container(
-                            margin: EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 0,
-                            ),
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: Color(0xFF232946), width: 1),
-                                borderRadius: BorderRadius.circular(10),
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomePage()));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 0,
                               ),
-                              title: SizedBox(
-                                width: 200.0,
-                                child: MarqueeWidget(
-                                  direction: Axis.horizontal,
-                                  child: Text(
-                                    document.id, // Display doc name
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      color: Color(0xFF232946), width: 1),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                title: SizedBox(
+                                  width: 200.0,
+                                  child: MarqueeWidget(
+                                    direction: Axis.horizontal,
+                                    child: Text(
+                                      document.id, // Display doc name
+                                    ),
                                   ),
                                 ),
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(
-                                  Icons.remove_circle,
-                                  color: Color(0xFF232946),
+                                trailing: IconButton(
+                                  icon: const Icon(
+                                    Icons.remove_circle,
+                                    color: Color(0xFF232946),
+                                  ),
+                                  onPressed: () async {
+                                    if (user != null && !user!.isAnonymous) {
+                                      String songName = document.id;
+
+                                      DocumentReference documentReference =
+                                          FirebaseFirestore.instance
+                                              .collection('userInfo')
+                                              .doc(user!.uid)
+                                              .collection("Saved Songs")
+                                              .doc(songName);
+
+                                      documentReference.delete();
+
+                                      getSavedSongs();
+                                    }
+                                  },
                                 ),
-                                onPressed: () async {},
                               ),
                             ),
                           );
