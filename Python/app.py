@@ -1,6 +1,7 @@
 import pickle
 
 from flask import Flask, request, jsonify
+# from addkeywordstofirebase import add_keywords_to_songs
 
 from emotion_prediction import predict_text_emotion
 from music_recommendation import fetch_music_based_on_emotion, fetch_music_based_on_activity
@@ -52,4 +53,5 @@ def recommend_song():
 if __name__ == '__main__':
     print('Starting Flask server...')
     # add_keywords_to_songs()
+    # print('Got keywords for songs')
     app.run(host='0.0.0.0',debug=True)

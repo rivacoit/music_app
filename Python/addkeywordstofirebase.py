@@ -9,7 +9,9 @@ def add_keywords_to_songs():
     emotions = {
         "anger": "anger",
         "joy": "joy",
-        "sadness": "sadness"
+        "sadness": "sadness",
+        "love": "love",
+        "fear": "fear",
     }
 
     for emotion, doc_name in emotions.items():
