@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, duplicate_ignore
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -77,10 +77,10 @@ class _SavedSongsState extends State<SavedSongs> {
         child: Column(
           children: [
             Align(
+              alignment: Alignment.center,
               child: Text(
                 "Saved songs",
               ),
-              alignment: Alignment.center,
             ),
             docSnapshot == null
                 ? CircularProgressIndicator()

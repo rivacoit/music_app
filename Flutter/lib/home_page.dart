@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     {
       "topic": "Friendship Fallout",
       "songs": ["I Lost a Friend", "How to Lose a Friend"],
-      "artists": ["FINNEAS", "no clue tbh"],
+      "artists": ["FINNEAS", "Wafia"],
     },
   ];
 
@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                                 Flexible(
                                   fit: FlexFit.tight,
                                   child: Container(
-                                    width: 200,
+                                    width: 250,
                                     child: ListView.separated(
                                       itemCount: topicData["songs"].length,
                                       separatorBuilder: (BuildContext context,
@@ -229,21 +229,50 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                           child: Row(
                                             children: [
-                                              Text(
-                                                "${topicData["songs"][songIndex]}",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Color(0xff232946),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              SizedBox(
+                                                width: 150.0,
+                                                child: MarqueeWidget(
+                                                  direction: Axis.horizontal,
+                                                  child: Text(
+                                                    "${topicData["songs"][songIndex]}",
+                                                    style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                              Spacer(),
-                                              Text(
-                                                "${topicData["artists"][songIndex]}",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Color(0xff232946),
+                                              SizedBox(
+                                                width: 90.0,
+                                                child: MarqueeWidget(
+                                                  direction: Axis.horizontal,
+                                                  child: Text(
+                                                    "${topicData["artists"][songIndex]}",
+                                                    style: TextStyle(
+                                                      fontFamily: "Poppins",
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
+                                              // Text(
+                                              //   "${topicData["songs"][songIndex]}",
+                                              //   style: TextStyle(
+                                              //     fontSize: 16,
+                                              //     color: Color(0xff232946),
+                                              //   ),
+                                              // ),
+                                              // Spacer(),
+                                              // Text(
+                                              //   "${topicData["artists"][songIndex]}",
+                                              //   style: TextStyle(
+                                              //     fontSize: 16,
+                                              //     color: Color(0xff232946),
+                                              //   ),
+                                              // ),
                                             ],
                                           ),
                                         );
