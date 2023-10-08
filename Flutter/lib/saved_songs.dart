@@ -46,15 +46,16 @@ class _SavedSongsState extends State<SavedSongs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff232946),
       appBar: AppBar(
         elevation: 0,
         iconTheme: IconThemeData(
-          color: Color(0xFF232946),
+          color: Color(0xFFfffffe),
         ),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
-            color: Color(0xFF232946),
+            color: Color(0xFFfffffe),
           ),
           onPressed: () {
             Navigator.push(
@@ -71,16 +72,29 @@ class _SavedSongsState extends State<SavedSongs> {
       // ignore: prefer_const_constructors
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(
-          20,
+          25,
         ),
         // ignore: prefer_const_constructors
         child: Column(
           children: [
             Align(
               alignment: Alignment.center,
-              child: Text(
-                "Saved songs",
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Saved songs",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Color(0xfffffffe),
+                    fontFamily: "Poppins",
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
+            ),
+            SizedBox(
+              height: 20,
             ),
             docSnapshot == null
                 ? CircularProgressIndicator()
@@ -105,6 +119,7 @@ class _SavedSongsState extends State<SavedSongs> {
                                 horizontal: 0,
                               ),
                               child: ListTile(
+                                tileColor: Color(0xfffffffe),
                                 shape: RoundedRectangleBorder(
                                   side: BorderSide(
                                       color: Color(0xFF232946), width: 1),
@@ -116,13 +131,16 @@ class _SavedSongsState extends State<SavedSongs> {
                                     direction: Axis.horizontal,
                                     child: Text(
                                       document.id, // Display doc name
+                                      style: TextStyle(
+                                        color: Color(0xff232946),
+                                      ),
                                     ),
                                   ),
                                 ),
                                 trailing: IconButton(
                                   icon: const Icon(
                                     Icons.remove_circle,
-                                    color: Color(0xFF232946),
+                                    color: Color(0xff232946),
                                   ),
                                   onPressed: () async {
                                     if (user != null && !user!.isAnonymous) {
