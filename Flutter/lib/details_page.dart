@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:genius_lyrics/genius_lyrics.dart';
 import 'package:provider/provider.dart'; // Import Firestore
@@ -16,6 +17,9 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage> {
   String lyrics = "";
+  bool lyricsLoading = true;
+  bool lyricsLoaded = false;
+
   Future<DocumentSnapshot<Map<String, dynamic>>> _getSongInfo() async {
     final QuerySnapshot<Map<String, dynamic>> emotionsCollection =
         await FirebaseFirestore.instance
@@ -35,15 +39,26 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   void getLyrics(String title, String artist) async {
+    if (lyricsLoaded) {
+      return;
+    }
+
     Genius genius = Genius(
         accessToken:
             "IXpLmMYu2hP40TG71dhbb81szVPVAxyOUAceeMYkpVVH23dOOG9kufcMDZr9xjyf");
     Song? song = (await genius.searchSong(artist: artist, title: title));
 
     if (song != null) {
-      lyrics = (song.lyrics)!;
+      setState(() {
+        lyrics = song.lyrics!;
+        lyricsLoading = false;
+        lyricsLoaded = true;
+      });
     } else {
-      lyrics = "failed to retrieve lyrics";
+      setState(() {
+        lyrics = "failed to retrieve lyrics";
+        lyricsLoading = false;
+      });
     }
   }
 
@@ -73,7 +88,9 @@ class _DetailsPageState extends State<DetailsPage> {
             future: _getSongInfo(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else if (!snapshot.hasData || snapshot.data == null) {
@@ -91,59 +108,67 @@ class _DetailsPageState extends State<DetailsPage> {
                   .join(", "); // Convert list to string
               getLyrics(songName, artist);
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$songName',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff232946),
+              if (lyricsLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (lyricsLoaded) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$songName',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff232946),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    '$artist',
-                    style: TextStyle(
-                      fontSize: 16,
+                    SizedBox(
+                      height: 10,
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    color: Color(0xfffffffe),
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Lyrics",
-                          style: TextStyle(
-                            color: Color(0xff232946),
-                            fontFamily: "Poppins",
-                            fontSize: 15,
+                    Text(
+                      '$artist',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      color: Color(0xfffffffe),
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Lyrics",
+                            style: TextStyle(
+                              color: Color(0xff232946),
+                              fontFamily: "Poppins",
+                              fontSize: 15,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          lyrics,
-                          style: TextStyle(
-                            color: Color(0xff232946),
-                            fontFamily: "Poppins",
-                            fontSize: 12,
+                          SizedBox(
+                            height: 20,
                           ),
-                        ),
-                      ],
+                          Text(
+                            lyrics,
+                            style: TextStyle(
+                              color: Color(0xff232946),
+                              fontFamily: "Poppins",
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              );
+                  ],
+                );
+              } else {
+                return Text('Failed to load page.');
+              }
             },
           ),
         ),
