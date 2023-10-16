@@ -146,7 +146,9 @@ class _SearchPageState extends State<SearchPage> {
                       icon: const Icon(Icons.search),
                       iconSize: 25,
                       color: Color(0xFf232946),
-                      onPressed: () {},
+                      onPressed: () {
+                        _search(inputText);
+                      },
                     ),
                   ),
                 ],

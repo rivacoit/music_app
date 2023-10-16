@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:marquee/marquee.dart';
 import 'package:music_app/components/marquee.dart';
 import 'package:music_app/home_page.dart';
+import 'package:music_app/search.dart';
 import 'dart:convert';
 
 import 'package:page_transition/page_transition.dart';
@@ -13,16 +14,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ResultsPage extends StatefulWidget {
-  String inputText;
-
   ResultsPage({super.key, required this.inputText});
+  String inputText;
 
   @override
   State<ResultsPage> createState() => _ResultsPageState();
 }
 
 class _ResultsPageState extends State<ResultsPage> {
-  String inputText = '';
   String predictedEmotion = '';
   Map<String, dynamic> recommendedSongs = {};
 
@@ -56,14 +55,14 @@ class _ResultsPageState extends State<ResultsPage> {
   }
 
   Future<void> _predictEmotionAndFetchSongs() async {
-    addHistory(inputText);
+    addHistory(widget.inputText);
     const String backendUrl = 'http://127.0.0.1:5000';
     // Addresses
     // Android: http://10.0.2.2:5000
     // iOS: http://127.0.0.1:5000
 
     final Map<String, String> data = {
-      'text': inputText,
+      'text': widget.inputText,
     };
 
     try {
@@ -120,64 +119,35 @@ class _ResultsPageState extends State<ResultsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      iconSize: 25,
-                      color: Color(0xFf232946),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            child: HomePage(),
-                            type: PageTransitionType.leftToRight,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
                   Expanded(
-                    child: SizedBox(
-                      width: 300,
-                      height: 40,
-                      child: TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            inputText = value;
-                          });
-                        },
-                        autofocus: true,
-                        decoration: InputDecoration(
-                          hintText: "Tell your story",
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 15.0,
-                            vertical: 10.0,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(0),
                           ),
-                          hintStyle: TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 15,
-                            fontWeight: FontWeight.normal,
-                            color: Color(0xFF232946),
+                        ),
+                        side: MaterialStateProperty.all<BorderSide>(
+                          BorderSide(
+                            width: 2.0,
+                            color: Color(0xFf232946),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color(0xFF232946),
-                              width: 2,
-                            ),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(0),
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color(0xFF232946),
-                              width: 2,
-                            ),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(0),
-                            ),
-                          ),
+                        ),
+                        elevation: MaterialStatePropertyAll<double>(0),
+                        backgroundColor:
+                            MaterialStatePropertyAll<Color>(Colors.transparent),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        widget.inputText,
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal,
+                          color: Color(0xFF232946),
                         ),
                       ),
                     ),
