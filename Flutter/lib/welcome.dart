@@ -4,11 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:music_app/emotion_prediction_page.dart';
+import 'package:music_app/results_page.dart';
 import 'package:music_app/home_page.dart';
 import 'package:music_app/login.dart';
 import 'package:music_app/lyrics_analysis_page.dart';
-import 'package:music_app/no%20for%20now/search.dart';
+import 'package:music_app/search.dart';
 import "package:music_app/signup.dart";
 import 'package:music_app/components/buttons.dart';
 

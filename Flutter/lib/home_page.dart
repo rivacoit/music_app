@@ -8,9 +8,9 @@ import 'package:marquee/marquee.dart';
 import 'package:music_app/anonymous_profile.dart';
 import 'package:music_app/components/listtiles.dart';
 import 'package:music_app/components/marquee.dart';
-import 'package:music_app/emotion_prediction_page.dart';
+import 'package:music_app/results_page.dart';
 import 'package:music_app/profile.dart';
-import 'package:music_app/no%20for%20now/search.dart';
+import 'package:music_app/search.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EmotionPredictionPage(),
+        builder: (context) => SearchPage(),
       ),
     );
   }

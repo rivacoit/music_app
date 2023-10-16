@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:http/http.dart' as http;
 import 'package:marquee/marquee.dart';
 import 'package:music_app/components/marquee.dart';
@@ -11,19 +12,51 @@ import 'package:page_transition/page_transition.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class EmotionPredictionPage extends StatefulWidget {
-  const EmotionPredictionPage({super.key});
+class ResultsPage extends StatefulWidget {
+  String inputText;
+
+  ResultsPage({super.key, required this.inputText});
 
   @override
-  State<EmotionPredictionPage> createState() => _EmotionPredictionPageState();
+  State<ResultsPage> createState() => _ResultsPageState();
 }
 
-class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
+class _ResultsPageState extends State<ResultsPage> {
   String inputText = '';
   String predictedEmotion = '';
   Map<String, dynamic> recommendedSongs = {};
 
+  User? user = FirebaseAuth.instance.currentUser;
+  @override
+  void initState() {
+    _predictEmotionAndFetchSongs();
+    super.initState();
+  }
+
+  void addHistory(String input) async {
+    try {
+      if (user != null && !user!.isAnonymous) {
+        String userId = user!.uid;
+
+        DocumentReference userRef =
+            FirebaseFirestore.instance.collection('userInfo').doc(userId);
+
+        DocumentReference searchHistRef =
+            userRef.collection('Search History').doc(input);
+
+        // Set the song data
+        await searchHistRef.set({
+          'search input': input,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      }
+    } catch (e) {
+      print('Error adding song: $e');
+    }
+  }
+
   Future<void> _predictEmotionAndFetchSongs() async {
+    addHistory(inputText);
     const String backendUrl = 'http://127.0.0.1:5000';
     // Addresses
     // Android: http://10.0.2.2:5000
@@ -276,22 +309,7 @@ class _EmotionPredictionPageState extends State<EmotionPredictionPage> {
                         ],
                       ),
                     )
-                  : Column(
-                      children: const [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "Recent searches",
-                          style: TextStyle(
-                            fontFamily: "Poppins",
-                            color: Color(0xff232946),
-                            fontWeight: FontWeight.normal,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ],
-                    )
+                  : Text("data"),
             ],
           ),
         ),
