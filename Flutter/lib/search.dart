@@ -35,6 +35,7 @@ class _SearchPageState extends State<SearchPage> {
             .collection('userInfo')
             .doc(user!.uid)
             .collection("Search History")
+            .orderBy('timestamp', descending: true)
             .get();
         setState(() {
           docSnapshot = snapshot;

@@ -40,11 +40,18 @@ class _ResultsPageState extends State<ResultsPage> {
         DocumentReference userRef =
             FirebaseFirestore.instance.collection('userInfo').doc(userId);
 
-        DocumentReference searchHistRef =
-            userRef.collection('Search History').doc(input);
+        CollectionReference searchHistRef =
+            userRef.collection('Search History');
 
-        // Set the song data
-        await searchHistRef.set({
+        QuerySnapshot historySnapshot =
+            await searchHistRef.orderBy('timestamp', descending: true).get();
+
+        if (historySnapshot.docs.length >= 5) {
+          await historySnapshot.docs.last.reference.delete();
+        }
+
+        // Add new document
+        await searchHistRef.doc(input).set({
           'search input': input,
           'timestamp': FieldValue.serverTimestamp(),
         });
@@ -56,7 +63,7 @@ class _ResultsPageState extends State<ResultsPage> {
 
   Future<void> _predictEmotionAndFetchSongs() async {
     addHistory(widget.inputText);
-    const String backendUrl = 'http://127.0.0.1:5000';
+    const String backendUrl = 'http://10.0.2.2:5000';
     // Addresses
     // Android: http://10.0.2.2:5000
     // iOS: http://127.0.0.1:5000

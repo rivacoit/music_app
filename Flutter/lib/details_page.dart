@@ -19,6 +19,7 @@ class _DetailsPageState extends State<DetailsPage> {
   String lyrics = "";
   bool lyricsLoading = true;
   bool lyricsLoaded = false;
+  String albumCoverUrl = "";
 
   Future<DocumentSnapshot<Map<String, dynamic>>> _getSongInfo() async {
     final QuerySnapshot<Map<String, dynamic>> emotionsCollection =
@@ -39,7 +40,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   void getLyrics(String title, String artist) async {
-    if (lyricsLoaded) {
+    if (lyricsLoaded || !mounted) {
       return;
     }
 
@@ -48,11 +49,16 @@ class _DetailsPageState extends State<DetailsPage> {
             "IXpLmMYu2hP40TG71dhbb81szVPVAxyOUAceeMYkpVVH23dOOG9kufcMDZr9xjyf");
     Song? song = (await genius.searchSong(artist: artist, title: title));
 
+    if (!mounted) {
+      return;
+    }
+
     if (song != null) {
       setState(() {
         lyrics = song.lyrics!;
         lyricsLoading = false;
         lyricsLoaded = true;
+        albumCoverUrl = song.songArtImageUrl ?? "";
       });
     } else {
       setState(() {
@@ -116,6 +122,16 @@ class _DetailsPageState extends State<DetailsPage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 30),
+                    if (albumCoverUrl.isNotEmpty)
+                      Center(
+                        child: Image.network(
+                          albumCoverUrl,
+                          width: 250,
+                          height: 250,
+                        ),
+                      ),
+                    SizedBox(height: 30),
                     Text(
                       '$songName',
                       style: TextStyle(
@@ -124,18 +140,14 @@ class _DetailsPageState extends State<DetailsPage> {
                         color: Color(0xff232946),
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 5),
                     Text(
                       '$artist',
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
+                    SizedBox(height: 20),
                     Container(
                       color: Color(0xfffffffe),
                       padding: EdgeInsets.all(20),
@@ -164,6 +176,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         ],
                       ),
                     ),
+                    SizedBox(height: 20),
                   ],
                 );
               } else {
