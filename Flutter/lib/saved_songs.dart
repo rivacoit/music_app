@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/components/marquee.dart';
 import 'package:music_app/details_page.dart';
-import 'package:music_app/home_page.dart';
 import 'package:music_app/profile.dart';
 import 'package:page_transition/page_transition.dart';
 

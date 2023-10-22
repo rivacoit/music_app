@@ -144,7 +144,7 @@ class _SearchHistPageState extends State<SearchHistPage> {
                                 ),
                                 trailing: IconButton(
                                   icon: const Icon(
-                                    Icons.remove_circle,
+                                    Icons.close,
                                     color: Color(0xff232946),
                                   ),
                                   onPressed: () async {

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,10 +9,8 @@ import 'package:music_app/home_page.dart';
 import 'package:music_app/link_with_email.dart';
 import 'package:music_app/signup.dart';
 import 'package:music_app/welcome.dart';
-import 'package:page_transition/page_transition.dart';
 
 import 'components/buttons.dart';
-import 'update_profile.dart';
 
 class AnonymousProfilePage extends StatefulWidget {
   const AnonymousProfilePage({super.key});

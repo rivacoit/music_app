@@ -3,7 +3,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:music_app/components/textfield.dart';
 import 'package:music_app/results_page.dart';
 import 'package:music_app/home_page.dart';
 import 'package:page_transition/page_transition.dart';
