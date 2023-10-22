@@ -167,59 +167,59 @@ class _SearchPageState extends State<SearchPage> {
                     style: TextStyle(
                       fontFamily: "Poppins",
                       color: Color(0xff232946),
-                      fontWeight: FontWeight.normal,
-                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
-                  Divider(
-                    height: 1,
-                    color: Color(0xFF232946),
-                  ),
-                  docSnapshot == null
-                      ? CircularProgressIndicator(
-                          color: Color(0xff232946),
-                        )
-                      : docSnapshot!.docs.isEmpty
-                          ? Text('No search history.')
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: docSnapshot!.docs.length,
-                              itemBuilder: (context, index) {
-                                final document = docSnapshot!.docs[index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    _search(document.id);
-                                  },
-                                  child: Container(
-                                      child: Column(
-                                    children: [
-                                      ListTile(
-                                        tileColor: Colors.transparent,
-                                        title: SizedBox(
-                                          width: 200.0,
-                                          child: MarqueeWidget(
-                                            direction: Axis.horizontal,
-                                            child: Text(
-                                              document.id, // Display doc name
-                                              style: TextStyle(
-                                                color: Color(0xff232946),
+                  FirebaseAuth.instance.currentUser!.isAnonymous
+                      ? Text(
+                          "You are logged in as guest and cannot view your search history.")
+                      : docSnapshot == null
+                          ? CircularProgressIndicator(
+                              color: Color(0xff232946),
+                            )
+                          : docSnapshot!.docs.isEmpty
+                              ? Text('No search history.')
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: docSnapshot!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    final document = docSnapshot!.docs[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        _search(document.id);
+                                      },
+                                      child: Container(
+                                          child: Column(
+                                        children: [
+                                          ListTile(
+                                            tileColor: Colors.transparent,
+                                            title: SizedBox(
+                                              width: 200.0,
+                                              child: MarqueeWidget(
+                                                direction: Axis.horizontal,
+                                                child: Text(
+                                                  document
+                                                      .id, // Display doc name
+                                                  style: TextStyle(
+                                                    color: Color(0xff232946),
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                      Divider(
-                                        height: 1,
-                                        color: Color(0xFF232946),
-                                      ),
-                                    ],
-                                  )),
-                                );
-                              },
-                            ),
+                                          Divider(
+                                            height: 1,
+                                            color: Color(0xFF232946),
+                                          ),
+                                        ],
+                                      )),
+                                    );
+                                  },
+                                ),
                 ],
               ),
             ],

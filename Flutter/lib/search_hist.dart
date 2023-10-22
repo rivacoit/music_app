@@ -3,36 +3,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:music_app/components/marquee.dart';
-import 'package:music_app/details_page.dart';
-import 'package:music_app/home_page.dart';
 import 'package:music_app/profile.dart';
+import 'package:music_app/results_page.dart';
 import 'package:page_transition/page_transition.dart';
 
-class SavedSongs extends StatefulWidget {
-  const SavedSongs({super.key});
+import 'components/marquee.dart';
+
+class SearchHistPage extends StatefulWidget {
+  const SearchHistPage({super.key});
 
   @override
-  State<SavedSongs> createState() => _SavedSongsState();
+  State<SearchHistPage> createState() => _SearchHistPageState();
 }
 
-class _SavedSongsState extends State<SavedSongs> {
+class _SearchHistPageState extends State<SearchHistPage> {
   QuerySnapshot? docSnapshot;
   User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
     super.initState();
-    getSavedSongs();
+    getSearchHist();
   }
 
-  Future<void> getSavedSongs() async {
+  Future<void> getSearchHist() async {
     try {
       if (user != null && !user!.isAnonymous) {
         QuerySnapshot snapshot = await FirebaseFirestore.instance
             .collection('userInfo')
             .doc(user!.uid)
-            .collection("Saved Songs")
+            .collection("Search History")
             .get();
         setState(() {
           docSnapshot = snapshot;
@@ -69,7 +69,6 @@ class _SavedSongsState extends State<SavedSongs> {
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0,
       ),
-      // ignore: prefer_const_constructors
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(
           25,
@@ -82,7 +81,7 @@ class _SavedSongsState extends State<SavedSongs> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Saved songs",
+                  "Recent Searches",
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Color(0xfffffffe),
@@ -100,7 +99,7 @@ class _SavedSongsState extends State<SavedSongs> {
                 ? CircularProgressIndicator()
                 : docSnapshot!.docs.isEmpty
                     ? Text(
-                        'No Saved Songs Found',
+                        'No Search History Found',
                         style: TextStyle(
                           color: Color(0xfffffffe),
                         ),
@@ -115,8 +114,9 @@ class _SavedSongsState extends State<SavedSongs> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          DetailsPage(songInfo: document.id)));
+                                      builder: (context) => ResultsPage(
+                                            inputText: document.id,
+                                          )));
                             },
                             child: Container(
                               margin: EdgeInsets.symmetric(
@@ -149,18 +149,18 @@ class _SavedSongsState extends State<SavedSongs> {
                                   ),
                                   onPressed: () async {
                                     if (user != null && !user!.isAnonymous) {
-                                      String songName = document.id;
+                                      String searchEntry = document.id;
 
                                       DocumentReference documentReference =
                                           FirebaseFirestore.instance
                                               .collection('userInfo')
                                               .doc(user!.uid)
-                                              .collection("Saved Songs")
-                                              .doc(songName);
+                                              .collection("Search History")
+                                              .doc(searchEntry);
 
                                       documentReference.delete();
 
-                                      getSavedSongs();
+                                      getSearchHist();
                                     }
                                   },
                                 ),

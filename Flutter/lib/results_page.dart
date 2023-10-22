@@ -126,6 +126,12 @@ class _ResultsPageState extends State<ResultsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back),
+                  ),
                   Expanded(
                     child: ElevatedButton(
                       style: ButtonStyle(
@@ -286,7 +292,7 @@ class _ResultsPageState extends State<ResultsPage> {
                         ],
                       ),
                     )
-                  : Text("data"),
+                  : Text("Error reaching the server. Please try again later."),
             ],
           ),
         ),

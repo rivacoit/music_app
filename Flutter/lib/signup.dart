@@ -73,6 +73,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordcontroller = TextEditingController();
   final TextEditingController _confirmcontroller = TextEditingController();
   final TextEditingController _namecontroller = TextEditingController();
+  bool obscurePassword = true;
+  bool obscureConfirm = true;
 
   void _signup() async {
     final String email = _emailcontroller.text.trim();
@@ -162,18 +164,112 @@ class _SignUpPageState extends State<SignUpPage> {
             SizedBox(
               height: 15,
             ),
-            MyTextField(
-              controller: _passwordcontroller,
-              hintText: "Password",
-              obscureText: true,
+            SizedBox(
+              width: 300,
+              height: 50,
+              child: TextField(
+                autofocus: false,
+                obscureText: obscurePassword,
+                controller: _passwordcontroller,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                      icon: Icon(
+                        obscurePassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Color(0xFF232946),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = !obscurePassword;
+                        });
+                      }),
+                  hintText: "Password",
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 15.0,
+                    vertical: 15.0,
+                  ),
+                  hintStyle: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF232946),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFF232946),
+                      width: 3,
+                    ),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(0),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFF232946),
+                      width: 3,
+                    ),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(0),
+                    ),
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               height: 15,
             ),
-            MyTextField(
-              controller: _confirmcontroller,
-              hintText: "Confirm password",
-              obscureText: true,
+            SizedBox(
+              width: 300,
+              height: 50,
+              child: TextField(
+                autofocus: false,
+                obscureText: obscureConfirm,
+                controller: _confirmcontroller,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                      icon: Icon(
+                        obscureConfirm
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Color(0xFF232946),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          obscureConfirm = !obscureConfirm;
+                        });
+                      }),
+                  hintText: "Confirm password",
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 15.0,
+                    vertical: 15.0,
+                  ),
+                  hintStyle: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF232946),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFF232946),
+                      width: 3,
+                    ),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(0),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFF232946),
+                      width: 3,
+                    ),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(0),
+                    ),
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               height: 20,

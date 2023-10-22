@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final TextEditingController _emailcontroller = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
+  bool obscureText = true;
   void _signup() {
     Navigator.push(
       context,
@@ -87,10 +88,55 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: 15,
               ),
-              MyTextField(
-                controller: _passwordcontroller,
-                hintText: "Password",
-                obscureText: true,
+              SizedBox(
+                width: 300,
+                height: 50,
+                child: TextField(
+                  autofocus: false,
+                  obscureText: obscureText,
+                  controller: _passwordcontroller,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        icon: Icon(
+                          obscureText ? Icons.visibility : Icons.visibility_off,
+                          color: Color(0xFF232946),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            obscureText = !obscureText;
+                          });
+                        }),
+                    hintText: "Password",
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 15.0,
+                      vertical: 15.0,
+                    ),
+                    hintStyle: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF232946),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF232946),
+                        width: 3,
+                      ),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(0),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF232946),
+                        width: 3,
+                      ),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(0),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               SizedBox(
                 height: 20,

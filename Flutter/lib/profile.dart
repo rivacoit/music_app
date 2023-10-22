@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:music_app/components/buttons.dart';
 import 'package:music_app/home_page.dart';
 import 'package:music_app/saved_songs.dart';
+import 'package:music_app/search_hist.dart';
 import 'package:music_app/update_password.dart';
 import 'package:music_app/update_profile.dart';
 import 'package:music_app/welcome.dart';
@@ -147,7 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => HomePage(),
+                              builder: (context) => SearchHistPage(),
                             ),
                           );
                         },
