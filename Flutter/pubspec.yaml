@@ -45,6 +45,7 @@ dependencies:
   marquee: ^2.2.3
   flutter_launcher_icons: ^0.13.1
   genius_lyrics: ^1.0.1
+  url_launcher: ^6.1.14
 
 dev_dependencies:
   flutter_test:

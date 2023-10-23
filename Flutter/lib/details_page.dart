@@ -5,7 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:genius_lyrics/genius_lyrics.dart';
-import 'package:provider/provider.dart'; // Import Firestore
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart'; // Import Firestore
 
 class DetailsPage extends StatefulWidget {
   final String songInfo;
@@ -65,6 +66,19 @@ class _DetailsPageState extends State<DetailsPage> {
         lyrics = "failed to retrieve lyrics";
         lyricsLoading = false;
       });
+    }
+  }
+
+  void launchSpotify(String songName, String artist) async {
+    final url =
+        'https://open.spotify.com/search/${Uri.encodeComponent(songName)}%20${Uri.encodeComponent(artist)}';
+
+    print(url);
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'could not launch url';
     }
   }
 
@@ -146,6 +160,13 @@ class _DetailsPageState extends State<DetailsPage> {
                       style: TextStyle(
                         fontSize: 16,
                       ),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        launchSpotify(songName, artist);
+                      },
+                      child: Text('Listen on Spotify'),
                     ),
                     SizedBox(height: 20),
                     Container(
