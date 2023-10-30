@@ -46,6 +46,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   genius_lyrics: ^1.0.1
   url_launcher: ^6.1.14
+  flutter_appauth: ^6.0.2
 
 dev_dependencies:
   flutter_test:

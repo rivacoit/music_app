@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:genius_lyrics/genius_lyrics.dart';
 import 'package:provider/provider.dart'; // Import Firestore
-// import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
@@ -72,50 +72,50 @@ class _DetailsPageState extends State<DetailsPage> {
     }
   }
 
-  // final FlutterAppAuth appAuth = FlutterAppAuth();
-  // final String clientId = '0ad20df5fb67498da3ff35945ee37942';
-  // final String clientSecret = 'a00088fd258446ec824830d1e37a3e1d';
-  // final String redirectUrl = 'http://localhost:5000';
+  final FlutterAppAuth appAuth = FlutterAppAuth();
+  final String clientId = '0ad20df5fb67498da3ff35945ee37942';
+  final String clientSecret = 'a00088fd258446ec824830d1e37a3e1d';
+  final String redirectUrl = 'http://localhost:5000';
 
-  // listenOnSpotify(String songName, String artist) async {
-  //   try {
-  //     // Spotify Authentication
-  //     final AuthorizationTokenResponse? result =
-  //         await appAuth.authorizeAndExchangeCode(
-  //       AuthorizationTokenRequest(
-  //         clientId,
-  //         redirectUrl,
-  //         issuer: 'https://accounts.spotify.com',
-  //         discoveryUrl:
-  //             'https://accounts.spotify.com/.well-known/openid-configuration',
-  //         scopes: <String>['user-library-read'],
-  //       ),
-  //     );
+  listenOnSpotify(String songName, String artist) async {
+    try {
+      // Spotify Authentication
+      final AuthorizationTokenResponse? result =
+          await appAuth.authorizeAndExchangeCode(
+        AuthorizationTokenRequest(
+          clientId,
+          redirectUrl,
+          issuer: 'https://accounts.spotify.com',
+          discoveryUrl:
+              'https://accounts.spotify.com/.well-known/openid-configuration',
+          scopes: <String>['user-library-read'],
+        ),
+      );
 
-  //     if (result != null) {
-  //       final searchResponse = await http.get(
-  //         Uri.parse(
-  //             'https://api.spotify.com/v1/search?q=$songName%20$artist&type=track'),
-  //         headers: {
-  //           'Authorization': 'Bearer ${result.accessToken}',
-  //         },
-  //       );
+      if (result != null) {
+        final searchResponse = await http.get(
+          Uri.parse(
+              'https://api.spotify.com/v1/search?q=$songName%20$artist&type=track'),
+          headers: {
+            'Authorization': 'Bearer ${result.accessToken}',
+          },
+        );
 
-  //       if (searchResponse.statusCode == 200) {
-  //         final searchData = json.decode(searchResponse.body);
-  //         final tracks = searchData['tracks']['items'];
+        if (searchResponse.statusCode == 200) {
+          final searchData = json.decode(searchResponse.body);
+          final tracks = searchData['tracks']['items'];
 
-  //         if (tracks.isNotEmpty) {
-  //           final trackId = tracks[0]['id'];
-  //           final trackUrl = 'https://open.spotify.com/track/$trackId';
-  //           launch(trackUrl);
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     print('Error: $e');
-  //   }
-  // }
+          if (tracks.isNotEmpty) {
+            final trackId = tracks[0]['id'];
+            final trackUrl = 'https://open.spotify.com/track/$trackId';
+            launch(trackUrl);
+          }
+        }
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,10 +197,12 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    // ElevatedButton(
-                    //   onPressed: listenOnSpotify(songName, artist),
-                    //   child: Text('Listen on Spotify'),
-                    // ),
+                    ElevatedButton(
+                      onPressed: () {
+                        listenOnSpotify(songName, artist);
+                      },
+                      child: Text('Listen on Spotify'),
+                    ),
                     SizedBox(height: 20),
                     Container(
                       color: Color(0xfffffffe),
