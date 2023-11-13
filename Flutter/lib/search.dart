@@ -171,7 +171,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   FirebaseAuth.instance.currentUser!.isAnonymous
                       ? Text(
@@ -192,30 +192,73 @@ class _SearchPageState extends State<SearchPage> {
                                         _search(document.id);
                                       },
                                       child: Container(
-                                          child: Column(
-                                        children: [
-                                          ListTile(
-                                            tileColor: Colors.transparent,
-                                            title: SizedBox(
-                                              width: 200.0,
-                                              child: MarqueeWidget(
-                                                direction: Axis.horizontal,
-                                                child: Text(
-                                                  document
-                                                      .id, // Display doc name
-                                                  style: TextStyle(
-                                                    color: Color(0xff232946),
+                                        margin: EdgeInsets.symmetric(
+                                          vertical: 0,
+                                          horizontal: 15,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            ListTile(
+                                              dense: true,
+                                              visualDensity: VisualDensity(
+                                                vertical: -2,
+                                              ),
+                                              contentPadding:
+                                                  EdgeInsets.fromLTRB(
+                                                20,
+                                                0,
+                                                10,
+                                                0,
+                                              ),
+                                              tileColor: Color(0xfffffffe),
+                                              title: SizedBox(
+                                                width: 200.0,
+                                                child: MarqueeWidget(
+                                                  direction: Axis.horizontal,
+                                                  child: Text(
+                                                    document
+                                                        .id, // Display doc name
+                                                    style: TextStyle(
+                                                      color: Color(0xff232946),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
+                                              trailing: IconButton(
+                                                icon: const Icon(
+                                                  Icons.close,
+                                                  color: Color(0xff232946),
+                                                ),
+                                                onPressed: () async {
+                                                  if (user != null &&
+                                                      !user!.isAnonymous) {
+                                                    String searchEntry =
+                                                        document.id;
+
+                                                    DocumentReference
+                                                        documentReference =
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'userInfo')
+                                                            .doc(user!.uid)
+                                                            .collection(
+                                                                "Search History")
+                                                            .doc(searchEntry);
+
+                                                    documentReference.delete();
+
+                                                    getHistory();
+                                                  }
+                                                },
+                                              ),
                                             ),
-                                          ),
-                                          Divider(
-                                            height: 1,
-                                            color: Color(0xFF232946),
-                                          ),
-                                        ],
-                                      )),
+                                            SizedBox(
+                                              height: 10,
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     );
                                   },
                                 ),

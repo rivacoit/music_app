@@ -75,7 +75,7 @@ class _DetailsPageState extends State<DetailsPage> {
   final FlutterAppAuth appAuth = FlutterAppAuth();
   final String clientId = '0ad20df5fb67498da3ff35945ee37942';
   final String clientSecret = 'a00088fd258446ec824830d1e37a3e1d';
-  final String redirectUrl = 'http://localhost:5000';
+  final String redirectUrl = 'https://example.com/auth';
 
   listenOnSpotify(String songName, String artist) async {
     try {

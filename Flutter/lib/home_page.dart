@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:marquee/marquee.dart';
 import 'package:music_app/anonymous_profile.dart';
 import 'package:music_app/components/listtiles.dart';
@@ -289,6 +290,44 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 10,
+              ),
+              StaggeredGrid.count(
+                crossAxisCount: 4,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                children: [
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 2,
+                    mainAxisCellCount: 2,
+                    child: Container(
+                      color: Colors.black,
+                    ),
+                  ),
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 2,
+                    mainAxisCellCount: 1,
+                    child: Container(
+                      color: Colors.black,
+                    ),
+                  ),
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 2,
+                    mainAxisCellCount: 1,
+                    child: Container(
+                      color: Colors.black,
+                    ),
+                  ),
+                  StaggeredGridTile.count(
+                    crossAxisCellCount: 4,
+                    mainAxisCellCount: 2,
+                    child: Container(
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),

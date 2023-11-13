@@ -50,11 +50,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           onPressed: () {
             Navigator.push(
-                context,
-                PageTransition(
-                  child: HomePage(),
-                  type: PageTransitionType.leftToRight,
-                ));
+              context,
+              PageTransition(
+                child: HomePage(),
+                type: PageTransitionType.leftToRight,
+              ),
+            );
           },
         ),
         backgroundColor: Colors.transparent,

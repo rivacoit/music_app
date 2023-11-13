@@ -6,6 +6,8 @@ import 'package:music_app/components/marquee.dart';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:music_app/search.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ResultsPage extends StatefulWidget {
   const ResultsPage({super.key, required this.inputText});
@@ -122,7 +124,13 @@ class _ResultsPageState extends State<ResultsPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          child: SearchPage(),
+                          type: PageTransitionType.leftToRight,
+                        ),
+                      );
                     },
                     icon: Icon(Icons.arrow_back),
                   ),
