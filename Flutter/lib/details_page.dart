@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
@@ -77,94 +78,48 @@ class _DetailsPageState extends State<DetailsPage> {
     }
   }
 
-  // ORIGINAL METHOD
-  // final FlutterAppAuth appAuth = FlutterAppAuth();
-  // final String clientId = '0ad20df5fb67498da3ff35945ee37942';
-  // final String clientSecret = 'a00088fd258446ec824830d1e37a3e1d';
-  // final String redirectUrl = 'https://example.com/auth';
+  listenOnSpotify(String songName, String artist) async {
+    try {
+      var spotifyApi = _getSpotifyApi();
+      var searchResults =
+          await spotifyApi.search.get('$songName $artist').first(1);
 
-  // listenOnSpotify(String songName, String artist) async {
-  //   try {
-  //     // Spotify Authentication
-  //     final AuthorizationTokenResponse? result =
-  //         await appAuth.authorizeAndExchangeCode(
-  //       AuthorizationTokenRequest(
-  //         clientId,
-  //         redirectUrl,
-  //         issuer: 'https://accounts.spotify.com',
-  //         discoveryUrl:
-  //             'https://accounts.spotify.com/.well-known/openid-configuration',
-  //         scopes: <String>['user-library-read'],
-  //       ),
-  //     );
+      searchResults.forEach((pages) {
+        if (pages.items == null) {
+          print('Empty items');
+        }
+        pages.items!.forEach((item) async {
+          if (item is spotify.Track) {
+            print('id: ${item.id}\n'
+                'name: ${item.name}\n');
 
-  //     if (result != null) {
-  //       final searchResponse = await http.get(
-  //         Uri.parse(
-  //             'https://api.spotify.com/v1/search?q=$songName%20$artist&type=track'),
-  //         headers: {
-  //           'Authorization': 'Bearer ${result.accessToken}',
-  //         },
-  //       );
+            var trackUrl = 'https://open.spotify.com/track/${item.id}';
+            if (await canLaunch(trackUrl)) {
+              await launch(trackUrl);
+            } else {
+              print('Could not launch $trackUrl');
+            }
+          }
+        });
+      });
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error accessing Spotify'),
+        ),
+      );
+    }
+  }
 
-  //       if (searchResponse.statusCode == 200) {
-  //         final searchData = json.decode(searchResponse.body);
-  //         final tracks = searchData['tracks']['items'];
-
-  //         if (tracks.isNotEmpty) {
-  //           final trackId = tracks[0]['id'];
-  //           final trackUrl = 'https://open.spotify.com/track/$trackId';
-  //           launch(trackUrl);
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     print('Error: $e');
-  //   }
-  // }
-
-  // 11/12/2023 METHOD
-  // listenOnSpotify(String songName, String artist) async {
-  //   const String clientId = '0ad20df5fb67498da3ff35945ee37942';
-  //   const String clientSecret = 'a00088fd258446ec824830d1e37a3e1d';
-
-  //   final credentials = spotify.SpotifyApiCredentials(clientId, clientSecret);
-  //   final grant = spotify.SpotifyApi.authorizationCodeGrant(credentials);
-  //   final redirectUri = 'https://example.com/auth';
-
-  //   final scopes = [
-  //     spotify.AuthorizationScope.user.readEmail,
-  //     spotify.AuthorizationScope.library.read
-  //   ];
-
-  //   final authUri = grant
-  //       .getAuthorizationUrl(
-  //         Uri.parse(redirectUri),
-  //         scopes: scopes, // scopes are optional
-  //       )
-  //       .toString();
-
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => SpotifyAuthorizationWebView(
-  //         authUri: authUri,
-  //         redirectUri: redirectUri,
-  //         onAuthorizationCodeReceived: (String authorizationCode) async {
-  //           final response =
-  //               await grant.handleAuthorizationCode(authorizationCode);
-
-  //           final spotifyCredentials =
-  //               spotify.SpotifyApiCredentials(clientId, clientSecret);
-
-  //           final spotifyAPI = spotify.SpotifyApi(spotifyCredentials);
-
-  //           // USE SPOTIFY API HERE TO SEACH SONG/OTHER ACTIONS
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
+  // Helper function to get Spotify API instance
+  spotify.SpotifyApi _getSpotifyApi() {
+    // var keyJson = File('../key.json').readAsStringSync();
+    // var keyMap = json.decode(keyJson);
+    var credentials = spotify.SpotifyApiCredentials(
+        '0ad20df5fb67498da3ff35945ee37942', 'a00088fd258446ec824830d1e37a3e1d');
+    return spotify.SpotifyApi(credentials);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,12 +201,12 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     listenOnSpotify(songName, artist);
-                    //   },
-                    //   child: Text('Listen on Spotify'),
-                    // ),
+                    ElevatedButton(
+                      onPressed: () {
+                        listenOnSpotify(songName, artist);
+                      },
+                      child: Text('Listen on Spotify'),
+                    ),
                     SizedBox(height: 20),
                     Container(
                       color: Color(0xfffffffe),
@@ -294,43 +249,3 @@ class _DetailsPageState extends State<DetailsPage> {
     );
   }
 }
-
-// class SpotifyAuthorizationWebView extends StatelessWidget {
-//   final String authUri;
-//   final String redirectUri;
-//   final Function(String) onAuthorizationCodeReceived;
-
-//   SpotifyAuthorizationWebView({
-//     required this.authUri,
-//     required this.redirectUri,
-//     required this.onAuthorizationCodeReceived,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return WebviewScaffold(
-//       appBar: AppBar(
-//         title: Text('Spotify Authorization'),
-//       ),
-//       url: authUri,
-//       withJavascript: true,
-//       withLocalStorage: true,
-//       hidden: true,
-//       initialChild: Container(
-//         color: Colors.white,
-//         child: const Center(
-//           child: CircularProgressIndicator(),
-//         ),
-//       ),
-//       onPageFinished: (String url) {
-//         if (url.startsWith(redirectUri)) {
-//           final Uri uri = Uri.parse(url);
-//           final String authorizationCode = uri.queryParameters["code"] ?? "";
-
-//           Navigator.pop(context);
-//           onAuthorizationCodeReceived(authorizationCode);
-//         }
-//       },
-//     );
-//   }
-// }
