@@ -17,6 +17,8 @@ import 'package:uni_links/uni_links.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
+import 'package:flutter_appauth/flutter_appauth.dart';
+
 class DetailsPage extends StatefulWidget {
   final String songInfo;
   const DetailsPage({required this.songInfo});
@@ -112,12 +114,107 @@ class _DetailsPageState extends State<DetailsPage> {
     }
   }
 
+  Future<void> addToSpotifyPlaylist(
+      String songName, String artist, String accessToken) async {
+    try {
+      var spotifyApi = _getSpotifyApiWithToken(accessToken);
+
+      var playlists = await spotifyApi.playlists.me;
+      var playlist = playlists.first(1);
+
+      var searchResults =
+          await spotifyApi.search.get('$songName $artist').first(1);
+
+      searchResults.forEach((pages) {
+        pages.items!.forEach((item) async {
+          if (item is spotify.Track) {
+            print('id: ${item.id}\n'
+                'name: ${item.name}\n');
+
+            var trackUrl = 'https://open.spotify.com/track/${item.id}';
+            if (await canLaunch(trackUrl)) {
+              await launch(trackUrl);
+            } else {
+              print('Could not launch $trackUrl');
+            }
+          }
+        });
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  // Future<void> addToSpotifyPlaylist(String trackId) async {
+  //   try {
+  //     var spotifyApi = _getSpotifyApi();
+  //     var playlists = await spotifyApi.playlists.me;
+
+  //     var playlistId = playlists.first(1);
+
+  //     await spotifyApi.playlists
+  //         .addTracks(playlistId as List<String>, [trackId] as String);
+
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('Song added to playlist.'),
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     print('Error $e');
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('Error adding song to playlist.'),
+  //       ),
+  //     );
+  //   }
+  //   // final credentials = spotify.SpotifyApiCredentials(
+  //   //     '0ad20df5fb67498da3ff35945ee37942', 'a00088fd258446ec824830d1e37a3e1d');
+  //   // final grant = spotify.SpotifyApi.authorizationCodeGrant(credentials);
+
+  //   // final redirectUri = 'https://example.com/auth';
+
+  //   // final scopes = [
+  //   //   spotify.AuthorizationScope.user.readEmail,
+  //   //   spotify.AuthorizationScope.library.read
+  //   // ];
+
+  //   // final authUri = grant.getAuthorizationUrl(
+  //   //   Uri.parse(redirectUri),
+  //   //   scopes: scopes, // scopes are optional
+  //   // );
+
+  //   // await launch(authUri.toString(), forceWebView: true);
+
+  //   // final responseUri = await listen(redirectUri);
+
+  //   // final spotifyAPI = spotify.SpotifyApi.fromAuthCodeGrant(grant, responseUri);
+  // }
+
+  listen(String redirectUri) async {
+    final responseUri = await launch(redirectUri, forceWebView: true);
+
+    if (responseUri != null) {
+      return responseUri;
+    } else {
+      throw Exception('Failed authorization.');
+    }
+  }
+
   // Helper function to get Spotify API instance
   spotify.SpotifyApi _getSpotifyApi() {
     // var keyJson = File('../key.json').readAsStringSync();
     // var keyMap = json.decode(keyJson);
     var credentials = spotify.SpotifyApiCredentials(
         '0ad20df5fb67498da3ff35945ee37942', 'a00088fd258446ec824830d1e37a3e1d');
+    // var credentials =
+    //     spotify.SpotifyApiCredentials(keyMap['id'], keyMap['secret']);
+    return spotify.SpotifyApi(credentials);
+  }
+
+  spotify.SpotifyApi _getSpotifyApiWithToken(String accessToken) {
+    var credentials =
+        spotify.SpotifyApiCredentials.withAccessToken(accessToken);
     return spotify.SpotifyApi(credentials);
   }
 
@@ -206,6 +303,31 @@ class _DetailsPageState extends State<DetailsPage> {
                         listenOnSpotify(songName, artist);
                       },
                       child: Text('Listen on Spotify'),
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final appAuth = FlutterAppAuth();
+                        final AuthorizationTokenResponse? result =
+                            await appAuth.authorizeAndExchangeCode(
+                          AuthorizationTokenRequest(
+                            '0ad20df5fb67498da3ff35945ee37942',
+                            'http://10.0.2.2:5000/callback',
+                            discoveryUrl:
+                                'https://accounts.spotify.com/.well-known/openid-configuration',
+                            scopes: <String>[
+                              'user-read-private',
+                              'playlist-modify-public',
+                            ],
+                          ),
+                        );
+
+                        if (result != null && result.accessToken != null) {
+                          addToSpotifyPlaylist(
+                              songName, artist, result.accessToken!);
+                        }
+                      },
+                      child: Text('Add to Spotify Playlist'),
                     ),
                     SizedBox(height: 20),
                     Container(
