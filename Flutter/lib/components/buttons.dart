@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ButtonOne extends StatelessWidget {
   final String text;
@@ -159,6 +160,46 @@ class SettingsButton extends StatelessWidget {
             fontSize: 15,
             letterSpacing: 1,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class HomeButton extends StatelessWidget {
+  final String text;
+  final Color fontcolor;
+  final Color background;
+  final Function()? onp;
+  final double size;
+  const HomeButton({
+    super.key,
+    required this.text,
+    required this.fontcolor,
+    required this.background,
+    required this.onp,
+    required this.size,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: background,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(0),
+        ),
+        elevation: 0,
+        splashFactory: NoSplash.splashFactory,
+      ),
+      onPressed: onp,
+      child: Text(
+        text,
+        style: TextStyle(
+          color: fontcolor,
+          fontFamily: "Poppins",
+          fontSize: size,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );

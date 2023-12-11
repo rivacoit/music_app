@@ -57,12 +57,7 @@ class _SavedSongsState extends State<SavedSongs> {
             color: Color(0xFFfffffe),
           ),
           onPressed: () {
-            Navigator.push(
-                context,
-                PageTransition(
-                  child: ProfilePage(),
-                  type: PageTransitionType.leftToRight,
-                ));
+            Navigator.pop(context);
           },
         ),
         backgroundColor: Colors.transparent,
@@ -96,7 +91,9 @@ class _SavedSongsState extends State<SavedSongs> {
               height: 20,
             ),
             docSnapshot == null
-                ? CircularProgressIndicator()
+                ? CircularProgressIndicator(
+                    color: Color(0xfffffffe),
+                  )
                 : docSnapshot!.docs.isEmpty
                     ? Text(
                         'No Saved Songs Found',
@@ -127,19 +124,26 @@ class _SavedSongsState extends State<SavedSongs> {
                                 shape: RoundedRectangleBorder(
                                   side: BorderSide(
                                       color: Color(0xFF232946), width: 1),
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(0),
                                 ),
                                 title: SizedBox(
                                   width: 200.0,
-                                  child: MarqueeWidget(
-                                    direction: Axis.horizontal,
-                                    child: Text(
-                                      document.id, // Display doc name
-                                      style: TextStyle(
-                                        color: Color(0xff232946),
-                                      ),
+                                  child: Text(
+                                    overflow: TextOverflow.ellipsis,
+                                    document.id, // Display doc name
+                                    style: TextStyle(
+                                      color: Color(0xff232946),
                                     ),
                                   ),
+                                  // child: MarqueeWidget(
+                                  //   direction: Axis.horizontal,
+                                  //   child: Text(
+                                  //     document.id, // Display doc name
+                                  //     style: TextStyle(
+                                  //       color: Color(0xff232946),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ),
                                 trailing: IconButton(
                                   icon: const Icon(

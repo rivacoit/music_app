@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:genius_lyrics/genius_lyrics.dart';
+import 'package:music_app/components/buttons.dart';
 import 'package:provider/provider.dart'; // Import Firestore
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:http/http.dart' as http;
@@ -245,7 +246,9 @@ class _DetailsPageState extends State<DetailsPage> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Color(0xff232946),
+                  ),
                 );
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
@@ -266,7 +269,9 @@ class _DetailsPageState extends State<DetailsPage> {
 
               if (lyricsLoading) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Color(0xff232946),
+                  ),
                 );
               } else if (lyricsLoaded) {
                 return Column(
@@ -281,28 +286,78 @@ class _DetailsPageState extends State<DetailsPage> {
                           height: 250,
                         ),
                       ),
-                    SizedBox(height: 30),
-                    Text(
-                      '$songName',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff232946),
-                      ),
+                    SizedBox(
+                      height: 30,
                     ),
-                    SizedBox(height: 5),
-                    Text(
-                      '$artist',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '$songName',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff232946),
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                '$artist',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 50,
+                              width: 80,
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(0),
+                                    ),
+                                  ),
+                                  backgroundColor:
+                                      MaterialStatePropertyAll<Color>(
+                                    Color(0xffeebbc3),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Listen on\nSpotify",
+                                  style: TextStyle(
+                                    color: Color(0xFF232946),
+                                    fontFamily: "Poppins",
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  listenOnSpotify(songName, artist);
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
                     ),
                     SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
+                    ButtonOne(
+                      func: () {
                         listenOnSpotify(songName, artist);
                       },
-                      child: Text('Listen on Spotify'),
+                      text: 'Listen on Spotify',
                     ),
                     SizedBox(height: 10),
                     ElevatedButton(

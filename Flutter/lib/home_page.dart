@@ -7,11 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:marquee/marquee.dart';
 import 'package:music_app/anonymous_profile.dart';
+import 'package:music_app/components/buttons.dart';
 import 'package:music_app/components/listtiles.dart';
 import 'package:music_app/components/marquee.dart';
 import 'package:music_app/results_page.dart';
 import 'package:music_app/profile.dart';
+import 'package:music_app/saved_songs.dart';
 import 'package:music_app/search.dart';
+import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -295,28 +298,70 @@ class _HomePageState extends State<HomePage> {
               ),
               StaggeredGrid.count(
                 crossAxisCount: 4,
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 4,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
                 children: [
                   StaggeredGridTile.count(
                     crossAxisCellCount: 2,
                     mainAxisCellCount: 2,
                     child: Container(
-                      color: Colors.black,
+                      color: Color(0xff232946),
+                      child: HomeButton(
+                        background: Color(0xff232946),
+                        fontcolor: Color(0xfffffffe),
+                        text: "Saved Songs",
+                        onp: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SavedSongs(),
+                            ),
+                          );
+                        },
+                        size: 30,
+                      ),
                     ),
                   ),
                   StaggeredGridTile.count(
                     crossAxisCellCount: 2,
                     mainAxisCellCount: 1,
                     child: Container(
-                      color: Colors.black,
+                      color: Color(0xffb8c1ec),
+                      child: HomeButton(
+                        background: Color(0xffb8c1ec),
+                        fontcolor: Color(0xff232946),
+                        text: "Profile",
+                        onp: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePage(),
+                            ),
+                          );
+                        },
+                        size: 25,
+                      ),
                     ),
                   ),
                   StaggeredGridTile.count(
                     crossAxisCellCount: 2,
                     mainAxisCellCount: 1,
                     child: Container(
-                      color: Colors.black,
+                      color: Color(0xfffffffe),
+                      child: HomeButton(
+                        background: Color(0xfffffffe),
+                        fontcolor: Color(0xff232946),
+                        size: 25,
+                        text: "Settings",
+                        onp: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePage(),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                   StaggeredGridTile.count(
