@@ -9,6 +9,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:music_app/search.dart';
 import 'package:page_transition/page_transition.dart';
 
+import 'details_page.dart';
+
 class ResultsPage extends StatefulWidget {
   const ResultsPage({super.key, required this.inputText});
   final String inputText;
@@ -59,7 +61,7 @@ class _ResultsPageState extends State<ResultsPage> {
 
   Future<void> _predictEmotionAndFetchSongs() async {
     addHistory(widget.inputText);
-    const String backendUrl = 'http://10.0.2.2:5000';
+    const String backendUrl = 'http://127.0.0.1:5000';
     // Addresses
     // Android: http://10.0.2.2:5000
     // iOS: http://127.0.0.1:5000
@@ -219,14 +221,22 @@ class _ResultsPageState extends State<ResultsPage> {
                                         color: Color(0xFF232946), width: 1),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  title: SizedBox(
-                                    width: 200.0,
-                                    child: MarqueeWidget(
-                                      direction: Axis.horizontal,
-                                      child: Text(
-                                        title,
+                                  title: ElevatedButton(
+                                    child: SizedBox(
+                                      width: 200.0,
+                                      child: MarqueeWidget(
+                                        direction: Axis.horizontal,
+                                        child: Text(
+                                          title,
+                                        ),
                                       ),
                                     ),
+                                    onPressed: () {
+                                      MaterialPageRoute(
+                                          builder: (context) => DetailsPage(
+                                              songInfo: recommendedSongs.keys
+                                                  .elementAt(index)));
+                                    },
                                   ),
                                   trailing: IconButton(
                                     icon: const Icon(

@@ -16,7 +16,7 @@ class _SongRecPageState extends State<SongRecPage> {
   List<String> recommendedSongsByActivity = [];
 
   Future<void> _predictEmotionAndFetchSongs() async {
-    const String backendUrl = 'http://10.0.2.2:5000';
+    const String backendUrl = 'http://127.0.0.1:5000';
 
     final Map<String, String> data = {
       'text': inputText,

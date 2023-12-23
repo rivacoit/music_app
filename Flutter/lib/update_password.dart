@@ -34,6 +34,7 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
                   ),
                 ),
                 backgroundColor: Colors.white,
+                surfaceTintColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(0)),
                 ),

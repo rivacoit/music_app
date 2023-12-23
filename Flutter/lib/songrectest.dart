@@ -20,7 +20,7 @@ class _SongRecTestPageState extends State<SongRecTestPage> {
   List<String> recommendedSongs = [];
 
   Future<void> _fetchSongsByActivity() async {
-    const String backendUrl = 'http://10.0.2.2:5000';
+    const String backendUrl = 'http://127.0.0.1:5000';
     // Android: http://10.0.2.2:5000
     // IOS: http://127.0.0.1:5000
 

@@ -27,8 +27,8 @@ class _HomePageState extends State<HomePage> {
   List<Map> exploreContent = [
     {
       "topic": "Imposter Syndrome",
-      "songs": ["this is me trying", "Liability", "test1", "test2", "test3"],
-      "artists": ["Taylor Swift", "idr", "test1", "test2", "test3"],
+      "songs": ["this is me trying", "Liability", "Imposter Syndrome"],
+      "artists": ["Taylor Swift", "Lorde", "Alexa Cappelli"],
     },
     {
       "topic": "Friendship Fallout",
@@ -364,13 +364,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  StaggeredGridTile.count(
-                    crossAxisCellCount: 4,
-                    mainAxisCellCount: 2,
-                    child: Container(
-                      color: Colors.black,
-                    ),
-                  ),
+                  // StaggeredGridTile.count(
+                  //   crossAxisCellCount: 4,
+                  //   mainAxisCellCount: 2,
+                  //   child: Container(
+                  //     color: Colors.black,
+                  //   ),
+                  // ),
                 ],
               )
             ],

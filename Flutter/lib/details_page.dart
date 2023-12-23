@@ -18,8 +18,6 @@ import 'package:uni_links/uni_links.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-import 'package:flutter_appauth/flutter_appauth.dart';
-
 class DetailsPage extends StatefulWidget {
   final String songInfo;
   const DetailsPage({required this.songInfo});

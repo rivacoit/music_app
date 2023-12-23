@@ -15,7 +15,7 @@ class _LyricsAnalysisPageState extends State<LyricsAnalysisPage> {
 
   void _analyzeLyrics() async {
     // Implement the backend connection here
-    const String backendUrl = 'http://10.0.2.2:5000';
+    const String backendUrl = 'http://127.0.0.1:5000';
 
     final Map<String, String> data = {
       'lyrics': lyrics,
