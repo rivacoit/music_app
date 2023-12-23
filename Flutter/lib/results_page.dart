@@ -92,9 +92,9 @@ class _ResultsPageState extends State<ResultsPage> {
       );
 
       if (songsResponse.statusCode == 200) {
-        print(songsResponse.body);
+        // print(songsResponse.body);
         final decodeSongsResponse = json.decode(songsResponse.body);
-        print(decodeSongsResponse);
+        // print(decodeSongsResponse);
         setState(() {
           recommendedSongs = decodeSongsResponse['recommended_songs'];
         });
@@ -222,20 +222,34 @@ class _ResultsPageState extends State<ResultsPage> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   title: ElevatedButton(
+                                    style: ButtonStyle(
+                                        elevation:
+                                            MaterialStatePropertyAll<double>(
+                                                0.0),
+                                        backgroundColor:
+                                            MaterialStatePropertyAll<Color>(
+                                                Colors.transparent)),
                                     child: SizedBox(
                                       width: 200.0,
                                       child: MarqueeWidget(
                                         direction: Axis.horizontal,
                                         child: Text(
                                           title,
+                                          style: TextStyle(
+                                            fontFamily: "Poppins",
+                                            color: Colors.black,
+                                          ),
                                         ),
                                       ),
                                     ),
                                     onPressed: () {
-                                      MaterialPageRoute(
-                                          builder: (context) => DetailsPage(
-                                              songInfo: recommendedSongs.keys
-                                                  .elementAt(index)));
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              DetailsPage(songInfo: title),
+                                        ),
+                                      );
                                     },
                                   ),
                                   trailing: IconButton(

@@ -314,40 +314,40 @@ class _DetailsPageState extends State<DetailsPage> {
                             ],
                           ),
                         ),
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 50,
-                              width: 80,
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(0),
-                                    ),
-                                  ),
-                                  backgroundColor:
-                                      MaterialStatePropertyAll<Color>(
-                                    Color(0xffeebbc3),
-                                  ),
-                                ),
-                                child: Text(
-                                  "Listen on\nSpotify",
-                                  style: TextStyle(
-                                    color: Color(0xFF232946),
-                                    fontFamily: "Poppins",
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 17,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  listenOnSpotify(songName, artist);
-                                },
-                              ),
-                            )
-                          ],
-                        ),
+                        // Column(
+                        //   children: [
+                        //     SizedBox(
+                        //       height: 50,
+                        //       width: 80,
+                        //       child: ElevatedButton(
+                        //         style: ButtonStyle(
+                        //           shape: MaterialStateProperty.all<
+                        //               RoundedRectangleBorder>(
+                        //             RoundedRectangleBorder(
+                        //               borderRadius: BorderRadius.circular(0),
+                        //             ),
+                        //           ),
+                        //           backgroundColor:
+                        //               MaterialStatePropertyAll<Color>(
+                        //             Color(0xffeebbc3),
+                        //           ),
+                        //         ),
+                        //         child: Text(
+                        //           "Listen on\nSpotify",
+                        //           style: TextStyle(
+                        //             color: Color(0xFF232946),
+                        //             fontFamily: "Poppins",
+                        //             fontWeight: FontWeight.w300,
+                        //             fontSize: 17,
+                        //           ),
+                        //         ),
+                        //         onPressed: () {
+                        //           listenOnSpotify(songName, artist);
+                        //         },
+                        //       ),
+                        //     )
+                        //   ],
+                        // ),
                       ],
                     ),
                     SizedBox(height: 20),
