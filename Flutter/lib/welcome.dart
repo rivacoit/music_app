@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -60,30 +61,61 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   void _signinwithgoogle() async {
-    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    // GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    // GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
-    AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-    await FirebaseAuth.instance.signInWithCredential(credential);
-    // final user = FirebaseAuth.instance.currentUser;
-    // if (user != null) {
-    //   for (final providerProfile in user.providerData) {
-    //     user.updateDisplayName(displayName).displayName;
-    //     final emailAddress = providerProfile.email;
-    //     final profilePhoto = providerProfile.photoURL;
-    //   }
-    // }
+    // AuthCredential credential = GoogleAuthProvider.credential(
+    //   accessToken: googleAuth?.accessToken,
+    //   idToken: googleAuth?.idToken,
+    // );
+    // await FirebaseAuth.instance.signInWithCredential(credential);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomePage(),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => HomePage(),
+    //   ),
+    // );
+
+    try {
+      GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      String name = userCredential.user!.displayName ?? "";
+      String email = userCredential.user!.email ?? "";
+
+      await FirebaseFirestore.instance
+          .collection('userInfo')
+          .doc(userCredential.user!.uid)
+          .set({
+        'Name': name,
+        'Email': email,
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) => ErrorMessage(
+                header: "Signup Error",
+                bodyText: e.toString(),
+              ));
+    }
   }
 
   @override

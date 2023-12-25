@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import "package:music_app/components/textfield.dart";
 import 'package:music_app/components/buttons.dart';
 import 'package:music_app/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -80,6 +81,8 @@ class _SignUpPageState extends State<SignUpPage> {
     final String email = _emailcontroller.text.trim();
     final String password = _passwordcontroller.text.trim();
     final String confirm = _confirmcontroller.text.trim();
+    final String name = _namecontroller.text.trim();
+
     if (password != confirm) {
       showDialog(
         context: context,
@@ -97,7 +100,16 @@ class _SignUpPageState extends State<SignUpPage> {
         password: password,
       );
       User user = FirebaseAuth.instance.currentUser!;
-      user.updateDisplayName(_namecontroller.text.trim());
+      user.updateDisplayName(name);
+
+      await FirebaseFirestore.instance
+          .collection('userInfo')
+          .doc(user.uid)
+          .set({
+        'Name': name,
+        'Email': email,
+      });
+
       user.updatePhotoURL(
           "https://marvel-b1-cdn.bc0a.com/f00000000151180/sou.edu/academics/wp-content/uploads/sites/14/2016/07/placeholder-3.png");
       Navigator.pushReplacement(

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:convert';
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -24,6 +24,54 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Future<List<String>> getMostSavedSongs() async {
+    List<String> mostSavedSongs = [];
+
+    // Firestore collection reference
+    CollectionReference userInfoCollection =
+        FirebaseFirestore.instance.collection('userInfo');
+
+    // Query through all existing users
+    QuerySnapshot usersSnapshot = await userInfoCollection.get();
+
+    // print('USER SNAPSHOT:');
+    // print(usersSnapshot.docs);
+
+    // Iterate through each user
+    for (QueryDocumentSnapshot userDoc in usersSnapshot.docs) {
+      // Get saved songs collection
+      CollectionReference savedSongsCollection =
+          userDoc.reference.collection('Saved Songs');
+
+      // print('SAVED SONGS COLLECTION:');
+      // print(savedSongsCollection);
+
+      QuerySnapshot songsSnapshot = await savedSongsCollection.get();
+
+      // Calculate
+      for (QueryDocumentSnapshot songDoc in songsSnapshot.docs) {
+        String songName = songDoc['title'];
+        mostSavedSongs.add(songName);
+      }
+    }
+
+    // Counter
+    Map<String, int> songCounts = {};
+    mostSavedSongs.forEach((song) {
+      songCounts[song] = (songCounts[song] ?? 0) + 1;
+    });
+
+    // Sort songs
+    List<MapEntry<String, int>> sortedSongs = songCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    // Get top songs
+    List<String> topSongs =
+        sortedSongs.take(3).map((entry) => entry.key).toList();
+
+    return topSongs;
+  }
+
   List<Map> exploreContent = [
     {
       "topic": "Imposter Syndrome",
@@ -372,7 +420,42 @@ class _HomePageState extends State<HomePage> {
                   //   ),
                   // ),
                 ],
-              )
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              FutureBuilder(
+                  future: getMostSavedSongs(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      List<String> topSongs = snapshot.data as List<String>;
+
+                      return Container(
+                        height: 200,
+                        color: Color(0xfffffffe),
+                        child: ListView.builder(
+                          itemCount: topSongs.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(
+                                topSongs[index],
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Color(0xFF232946), width: 1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  })
             ],
           ),
         ),
