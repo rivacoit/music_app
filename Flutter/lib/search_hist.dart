@@ -128,7 +128,7 @@ class _SearchHistPageState extends State<SearchHistPage> {
                                 shape: RoundedRectangleBorder(
                                   side: BorderSide(
                                       color: Color(0xFF232946), width: 1),
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(0),
                                 ),
                                 title: SizedBox(
                                   width: 200.0,

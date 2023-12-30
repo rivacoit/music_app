@@ -5,6 +5,7 @@ import "package:music_app/components/textfield.dart";
 import 'package:music_app/components/buttons.dart';
 import 'package:music_app/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -111,20 +112,95 @@ class _SignUpPageState extends State<SignUpPage> {
       });
 
       user.updatePhotoURL(
-          "https://marvel-b1-cdn.bc0a.com/f00000000151180/sou.edu/academics/wp-content/uploads/sites/14/2016/07/placeholder-3.png");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginPage(),
+        "https://marvel-b1-cdn.bc0a.com/f00000000151180/sou.edu/academics/wp-content/uploads/sites/14/2016/07/placeholder-3.png",
+      );
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            "Sign up successful",
+            style: TextStyle(
+              fontFamily: "Poppins",
+              color: Color(0xff232946),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Color(0xfffffffe),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0)),
+          ),
+          content: Text(
+            "You have successfully created an account.",
+            style: TextStyle(
+              fontFamily: "Poppins",
+              color: Color(0xff232946),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(
+                  Color(0xFF232946),
+                ),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                ),
+              ),
+              child: Text(
+                "Log in",
+                style: TextStyle(
+                  color: Color(0xffb8c1ec),
+                ),
+              ),
+            ),
+            // ElevatedButton(
+            //   onPressed: () async {
+            //     await FirebaseAuth.instance.signOut();
+            //     Navigator.pushReplacement(
+            //       context,
+            //       PageTransition(
+            //         type: PageTransitionType.leftToRight,
+            //         child: LoginPage(),
+            //       ),
+            //     );
+            //   },
+            //   style: ButtonStyle(
+            //     backgroundColor: MaterialStatePropertyAll<Color>(
+            //       Color(0xFF232946),
+            //     ),
+            //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            //       RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(0),
+            //       ),
+            //     ),
+            //   ),
+            //   child: Text(
+            //     "Log out",
+            //     style: TextStyle(
+            //       color: Color(0xffb8c1ec),
+            //     ),
+            //   ),
+            // ),
+          ],
         ),
       );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => LoginPage(),
+      //   ),
+      // );
     } catch (e) {
       showDialog(
-          context: context,
-          builder: (context) => ErrorMessage(
-                header: "Signup Error",
-                bodyText: e.toString(),
-              ));
+        context: context,
+        builder: (context) => ErrorMessage(
+          header: "Signup Error",
+          bodyText: e.toString(),
+        ),
+      );
     }
   }
 
