@@ -9,7 +9,8 @@ def fetch_music_based_on_emotion(emotion):
     return data[emotion]
 
 
-def fetch_music_based_on_activity(text):
+def fetch_music_based_on_activity(emotion, text):
+# def fetch_music_based_on_activity(text):
     result = []
     s = text.split()
     s = get_stem(s)

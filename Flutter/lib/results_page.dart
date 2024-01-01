@@ -91,14 +91,15 @@ class _ResultsPageState extends State<ResultsPage> {
         Uri.parse('$backendUrl/recommendation?emotion=$predictedEmotion'),
       );
 
-      // const String testText = 'now we have bad blood';
+      // const String testText = 'cry';
 
       // final songsResponse = await http.get(
-      //   Uri.parse('$backendUrl/recommendation_by_activity?userinput=$testText'),
+      //   Uri.parse(
+      //       '$backendUrl/recommendation_by_activity?emotion=$predictedEmotion&userinput=$testText'),
       // );
 
       if (songsResponse.statusCode == 200) {
-        // print(songsResponse.body);
+        print(songsResponse.body);
         final decodeSongsResponse = json.decode(songsResponse.body);
         // print(decodeSongsResponse);
         setState(() {
