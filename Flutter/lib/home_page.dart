@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
 
     // Get top songs
     List<String> topSongs =
-        sortedSongs.take(3).map((entry) => entry.key).toList();
+        sortedSongs.take(5).map((entry) => entry.key).toList();
 
     return topSongs;
   }
@@ -75,19 +75,39 @@ class _HomePageState extends State<HomePage> {
   List<Map> exploreContent = [
     {
       "topic": "Imposter Syndrome",
-      "songs": ["this is me trying", "Liability", "Imposter Syndrome"],
-      "artists": ["Taylor Swift", "Lorde", "Alexa Cappelli"],
+      "songs": [
+        "this is me trying",
+        "Liability",
+        "this is a test to see how long this goes on"
+      ],
     },
     {
       "topic": "Friendship Fallout",
       "songs": ["I Lost a Friend", "How to Lose a Friend"],
-      "artists": ["FINNEAS", "Wafia"],
+    },
+    {
+      "topic": "Top Songs",
+      "songs": [],
+    },
+    {
+      "topic": "Topic Here",
+      "songs": [],
     },
   ];
 
   void initState() {
-    exploreContent.shuffle();
     super.initState();
+    exploreContent.shuffle();
+
+    int topSongsIndex = exploreContent.indexWhere(
+      (section) => section["topic"] == "Top Songs",
+    );
+
+    getMostSavedSongs().then((topSongs) {
+      setState(() {
+        exploreContent[topSongsIndex]["songs"] = topSongs;
+      });
+    });
   }
 
   void _profilered() async {
@@ -238,8 +258,7 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (BuildContext context, int index) {
                           final topicData = exploreContent[index];
                           return Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: index == 0 ? 0 : 10),
+                            margin: EdgeInsets.only(left: index == 0 ? 0 : 10),
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: Color(0xff232946),
@@ -285,7 +304,7 @@ class _HomePageState extends State<HomePage> {
                                                 width: 10,
                                               ),
                                               SizedBox(
-                                                width: 150.0,
+                                                width: 230,
                                                 child: MarqueeWidget(
                                                   direction: Axis.horizontal,
                                                   child: Text(
@@ -297,32 +316,17 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 90.0,
-                                                child: MarqueeWidget(
-                                                  direction: Axis.horizontal,
-                                                  child: Text(
-                                                    "${topicData["artists"][songIndex]}",
-                                                    style: TextStyle(
-                                                      fontFamily: "Poppins",
-                                                      fontSize: 12,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              // Text(
-                                              //   "${topicData["songs"][songIndex]}",
-                                              //   style: TextStyle(
-                                              //     fontSize: 16,
-                                              //     color: Color(0xff232946),
-                                              //   ),
-                                              // ),
-                                              // Spacer(),
-                                              // Text(
-                                              //   "${topicData["artists"][songIndex]}",
-                                              //   style: TextStyle(
-                                              //     fontSize: 16,
-                                              //     color: Color(0xff232946),
+                                              // SizedBox(
+                                              //   width: 90.0,
+                                              //   child: MarqueeWidget(
+                                              //     direction: Axis.horizontal,
+                                              //     child: Text(
+                                              //       "${topicData["artists"][songIndex]}",
+                                              //       style: TextStyle(
+                                              //         fontFamily: "Poppins",
+                                              //         fontSize: 12,
+                                              //       ),
+                                              //     ),
                                               //   ),
                                               // ),
                                             ],
@@ -424,38 +428,6 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 10,
               ),
-              FutureBuilder(
-                  future: getMostSavedSongs(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      List<String> topSongs = snapshot.data as List<String>;
-
-                      return Container(
-                        height: 200,
-                        color: Color(0xfffffffe),
-                        child: ListView.builder(
-                          itemCount: topSongs.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(
-                                topSongs[index],
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: Color(0xFF232946), width: 1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    }
-                  })
             ],
           ),
         ),

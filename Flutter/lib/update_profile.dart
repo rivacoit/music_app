@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -51,11 +52,23 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   void _saveprofile() async {
+    String uid = user.uid;
+
     if (_namecontroller.text.trim() != "") {
       await user.updateDisplayName(_namecontroller.text.trim());
+
+      await FirebaseFirestore.instance
+          .collection('userInfo')
+          .doc(uid)
+          .update({'Name': _namecontroller.text.trim()});
     }
     if (_emailcontroller.text.trim() != "") {
       await user.updateEmail(_emailcontroller.text.trim());
+
+      await FirebaseFirestore.instance
+          .collection('userInfo')
+          .doc(uid)
+          .update({'Email': _emailcontroller.text.trim()});
     }
     Navigator.pushReplacement(
       context,

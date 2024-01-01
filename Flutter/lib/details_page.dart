@@ -314,6 +314,13 @@ class _DetailsPageState extends State<DetailsPage> {
                             ],
                           ),
                         ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.favorite_border,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {},
+                        ),
                         // Column(
                         //   children: [
                         //     SizedBox(
