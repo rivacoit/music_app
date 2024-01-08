@@ -9,6 +9,7 @@ import 'package:music_app/components/buttons.dart';
 import 'package:music_app/home_page.dart';
 import 'package:music_app/saved_songs.dart';
 import 'package:music_app/search_hist.dart';
+import 'package:music_app/settings.dart';
 import 'package:music_app/update_password.dart';
 import 'package:music_app/update_profile.dart';
 import 'package:music_app/welcome.dart';
@@ -44,6 +45,12 @@ class _ProfilePageState extends State<ProfilePage> {
           color: Color(0xFF232946),
         ),
         leading: IconButton(
+          style: ButtonStyle(
+            iconSize: MaterialStatePropertyAll<double>(30.0),
+            padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(
+              EdgeInsets.fromLTRB(25, 0, 0, 0),
+            ),
+          ),
           icon: const Icon(
             Icons.arrow_back,
             color: Color(0xFF232946),
@@ -58,6 +65,27 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           },
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Settings(),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.settings,
+            ),
+            style: ButtonStyle(
+              iconSize: MaterialStatePropertyAll<double>(30.0),
+              padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(
+                EdgeInsets.fromLTRB(0, 0, 25, 0),
+              ),
+            ),
+          )
+        ],
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0,
       ),
@@ -102,10 +130,42 @@ class _ProfilePageState extends State<ProfilePage> {
                   maxLines: 1,
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 3,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdateProfilePage(),
+                      ),
+                    );
+                  },
+                  style: ButtonStyle(
+                    elevation: MaterialStatePropertyAll<double>(0.0),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                        side: BorderSide(
+                          color: Color(0xFF232946),
+                        ),
+                      ),
+                    ),
+                    backgroundColor: MaterialStatePropertyAll<Color>(
+                      Colors.transparent,
+                    ),
+                  ),
+                  child: Text(
+                    "Update Profile",
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 14,
+                      color: Color(0xFF232946),
+                    ),
+                  ),
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 40,
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -117,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Account",
+                          "Profile",
                           style: TextStyle(
                             fontFamily: "Poppins",
                             fontWeight: FontWeight.bold,
@@ -167,218 +227,222 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                         icon: Icons.archive,
                       ),
-                      SettingsButton(
-                        text: "Log out",
-                        func: () async {
-                          await showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text(
-                                "Logging out",
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  color: Color(0xff232946),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              backgroundColor: Color(0xfffffffe),
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(0)),
-                              ),
-                              content: Text(
-                                "Are you sure you want to log out?",
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  color: Color(0xff232946),
-                                ),
-                              ),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStatePropertyAll<Color>(
-                                      Color(0xFF232946),
-                                    ),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(0),
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                      color: Color(0xffb8c1ec),
-                                    ),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    await FirebaseAuth.instance.signOut();
-                                    Navigator.pushReplacement(
-                                      context,
-                                      PageTransition(
-                                        type: PageTransitionType.leftToRight,
-                                        child: WelcomePage(),
-                                      ),
-                                    );
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStatePropertyAll<Color>(
-                                      Color(0xFF232946),
-                                    ),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(0),
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "Log out",
-                                    style: TextStyle(
-                                      color: Color(0xffb8c1ec),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        icon: Icons.logout,
-                      ),
-                      SettingsButton(
-                        text: "Delete account",
-                        func: () async {
-                          await showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text(
-                                "DELETING ACCOUNT",
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(0)),
-                              ),
-                              content: Text(
-                                "ARE YOU SURE YOU WANT TO DELETE YOUR ACCOUNT? THIS CANNOT BE REVERSED.",
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  color: Colors.black,
-                                ),
-                              ),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStatePropertyAll<Color>(
-                                      Color(0xFF232946),
-                                    ),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(0),
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    await user.delete();
-                                    Navigator.pushReplacement(
-                                      context,
-                                      PageTransition(
-                                        type: PageTransitionType.leftToRight,
-                                        child: WelcomePage(),
-                                      ),
-                                    );
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStatePropertyAll<Color>(
-                                            Colors.black),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(0),
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "DELETE",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        icon: Icons.delete_forever,
-                      )
+                      // SettingsButton(
+                      //   text: "Log out",
+                      //   func: () async {
+                      //     await showDialog(
+                      //       context: context,
+                      //       builder: (context) => AlertDialog(
+                      //         title: Text(
+                      //           "Logging out",
+                      //           style: TextStyle(
+                      //             fontFamily: "Poppins",
+                      //             color: Color(0xff232946),
+                      //             fontWeight: FontWeight.bold,
+                      //           ),
+                      //         ),
+                      //         backgroundColor: Color(0xfffffffe),
+                      //         shape: RoundedRectangleBorder(
+                      //           borderRadius:
+                      //               BorderRadius.all(Radius.circular(0)),
+                      //         ),
+                      //         content: Text(
+                      //           "Are you sure you want to log out?",
+                      //           style: TextStyle(
+                      //             fontFamily: "Poppins",
+                      //             color: Color(0xff232946),
+                      //           ),
+                      //         ),
+                      //         actions: [
+                      //           ElevatedButton(
+                      //             onPressed: () => Navigator.pop(context),
+                      //             style: ButtonStyle(
+                      //               backgroundColor:
+                      //                   MaterialStatePropertyAll<Color>(
+                      //                 Color(0xFF232946),
+                      //               ),
+                      //               shape: MaterialStateProperty.all<
+                      //                   RoundedRectangleBorder>(
+                      //                 RoundedRectangleBorder(
+                      //                   borderRadius: BorderRadius.circular(0),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             child: Text(
+                      //               "Cancel",
+                      //               style: TextStyle(
+                      //                 color: Color(0xffb8c1ec),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           ElevatedButton(
+                      //             onPressed: () async {
+                      //               await FirebaseAuth.instance.signOut();
+                      //               Navigator.pushReplacement(
+                      //                 context,
+                      //                 PageTransition(
+                      //                   type: PageTransitionType.leftToRight,
+                      //                   child: WelcomePage(),
+                      //                 ),
+                      //               );
+                      //             },
+                      //             style: ButtonStyle(
+                      //               backgroundColor:
+                      //                   MaterialStatePropertyAll<Color>(
+                      //                 Color(0xFF232946),
+                      //               ),
+                      //               shape: MaterialStateProperty.all<
+                      //                   RoundedRectangleBorder>(
+                      //                 RoundedRectangleBorder(
+                      //                   borderRadius: BorderRadius.circular(0),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             child: Text(
+                      //               "Log out",
+                      //               style: TextStyle(
+                      //                 color: Color(0xffb8c1ec),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     );
+                      //   },
+                      //   icon: Icons.logout,
+                      // ),
+                      // SettingsButton(
+                      //   text: "Delete account",
+                      //   func: () async {
+                      //     await showDialog(
+                      //       context: context,
+                      //       builder: (context) => AlertDialog(
+                      //         title: Text(
+                      //           "DELETING ACCOUNT",
+                      //           style: TextStyle(
+                      //             fontFamily: "Poppins",
+                      //             color: Colors.black,
+                      //             fontWeight: FontWeight.bold,
+                      //           ),
+                      //         ),
+                      //         backgroundColor: Colors.white,
+                      //         shape: RoundedRectangleBorder(
+                      //           borderRadius:
+                      //               BorderRadius.all(Radius.circular(0)),
+                      //         ),
+                      //         content: Text(
+                      //           "ARE YOU SURE YOU WANT TO DELETE YOUR ACCOUNT? THIS CANNOT BE REVERSED.",
+                      //           style: TextStyle(
+                      //             fontFamily: "Poppins",
+                      //             color: Colors.black,
+                      //           ),
+                      //         ),
+                      //         actions: [
+                      //           ElevatedButton(
+                      //             onPressed: () => Navigator.pop(context),
+                      //             style: ButtonStyle(
+                      //               backgroundColor:
+                      //                   MaterialStatePropertyAll<Color>(
+                      //                 Color(0xFF232946),
+                      //               ),
+                      //               shape: MaterialStateProperty.all<
+                      //                   RoundedRectangleBorder>(
+                      //                 RoundedRectangleBorder(
+                      //                   borderRadius: BorderRadius.circular(0),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             child: Text(
+                      //               "Cancel",
+                      //               style: TextStyle(
+                      //                 color: Colors.white,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           ElevatedButton(
+                      //             onPressed: () async {
+                      //               await user.delete();
+                      //               Navigator.pushReplacement(
+                      //                 context,
+                      //                 PageTransition(
+                      //                   type: PageTransitionType.leftToRight,
+                      //                   child: WelcomePage(),
+                      //                 ),
+                      //               );
+                      //             },
+                      //             style: ButtonStyle(
+                      //               backgroundColor:
+                      //                   MaterialStatePropertyAll<Color>(
+                      //                       Colors.black),
+                      //               shape: MaterialStateProperty.all<
+                      //                   RoundedRectangleBorder>(
+                      //                 RoundedRectangleBorder(
+                      //                   borderRadius: BorderRadius.circular(0),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             child: Text(
+                      //               "DELETE",
+                      //               style: TextStyle(
+                      //                 color: Colors.white,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     );
+                      //   },
+                      //   icon: Icons.delete_forever,
+                      // )
                     ],
                   ),
                 ),
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFf232946),
-                  ),
-                  padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Privacy and Security",
-                          style: TextStyle(
-                            fontFamily: "Poppins",
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Color(0xfffffffe),
-                          ),
-                        ),
-                      ),
-                      Divider(
-                        height: 20,
-                        thickness: 3,
-                        color: Color(0xfffffffe),
-                      ),
-                      SettingsButton(
-                        text: "Change password",
-                        func: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UpdatePasswordPage(),
-                            ),
-                          );
-                        },
-                        icon: Icons.lock,
-                      ),
-                    ],
-                  ),
-                ),
+
+                //       Container(
+                //         decoration: BoxDecoration(
+                //           color: Color(0xFf232946),
+                //         ),
+                //         padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
+                //         child: Column(
+                //           children: [
+                //             Align(
+                //               alignment: Alignment.topLeft,
+                //               child: Text(
+                //                 "Privacy and Security",
+                //                 style: TextStyle(
+                //                   fontFamily: "Poppins",
+                //                   fontWeight: FontWeight.bold,
+                //                   fontSize: 20,
+                //                   color: Color(0xfffffffe),
+                //                 ),
+                //               ),
+                //             ),
+                //             Divider(
+                //               height: 20,
+                //               thickness: 3,
+                //               color: Color(0xfffffffe),
+                //             ),
+                //             SettingsButton(
+                //               text: "Change password",
+                //               func: () {
+                //                 Navigator.push(
+                //                   context,
+                //                   MaterialPageRoute(
+                //                     builder: (context) => UpdatePasswordPage(),
+                //                   ),
+                //                 );
+                //               },
+                //               icon: Icons.lock,
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

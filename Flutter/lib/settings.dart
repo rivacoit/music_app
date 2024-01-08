@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/profile.dart';
@@ -243,6 +246,15 @@ class _SettingsState extends State<Settings> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () async {
+                                    await FirebaseFirestore.instance
+                                        .collection("userInfo")
+                                        .doc(user.uid)
+                                        .delete()
+                                        .then(
+                                          (doc) => print("Document deleted"),
+                                          onError: (e) => print(
+                                              "Error updating document $e"),
+                                        );
                                     await user.delete();
                                     Navigator.pushReplacement(
                                       context,

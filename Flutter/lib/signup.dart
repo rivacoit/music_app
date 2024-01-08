@@ -138,7 +138,12 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           actions: [
             ElevatedButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginPage(),
+                ),
+              ),
               style: ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll<Color>(
                   Color(0xFF232946),

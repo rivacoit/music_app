@@ -60,7 +60,7 @@ class _SavedSongsState extends State<SavedSongs> {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xff232946),
         scrolledUnderElevation: 0,
       ),
       // ignore: prefer_const_constructors
@@ -102,6 +102,7 @@ class _SavedSongsState extends State<SavedSongs> {
                         ),
                       )
                     : ListView.builder(
+                        physics: BouncingScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: docSnapshot!.docs.length,
                         itemBuilder: (context, index) {

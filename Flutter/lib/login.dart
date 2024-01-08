@@ -43,7 +43,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     } catch (e) {
-      print("login failed $e");
+      await showDialog(
+          context: context,
+          builder: ((context) =>
+              ErrorMessage(header: "Login Failed", bodyText: "$e")));
+      //print("login failed $e");
     }
   }
 

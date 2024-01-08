@@ -66,7 +66,7 @@ class _SearchHistPageState extends State<SearchHistPage> {
                 ));
           },
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xff232946),
         scrolledUnderElevation: 0,
       ),
       body: SingleChildScrollView(
