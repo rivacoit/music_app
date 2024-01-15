@@ -6,6 +6,7 @@ import 'package:music_app/home_page.dart';
 import 'package:music_app/signup.dart';
 import "package:music_app/components/textfield.dart";
 import 'package:music_app/components/buttons.dart';
+import 'package:music_app/components/errorutils.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -43,10 +44,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     } catch (e) {
+      String errorMessage = removeErrorCode(e.toString());
       await showDialog(
           context: context,
           builder: ((context) =>
-              ErrorMessage(header: "Login Failed", bodyText: "$e")));
+              ErrorMessage(header: "Login Failed", bodyText: errorMessage)));
       //print("login failed $e");
     }
   }

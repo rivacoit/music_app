@@ -116,13 +116,19 @@ class _DetailsPageState extends State<DetailsPage> {
   Future<void> addToSpotifyPlaylist(
       String songName, String artist, String accessToken) async {
     try {
+      print('Getting SpotifyAPI');
       var spotifyApi = _getSpotifyApiWithToken(accessToken);
+      print('SpotifyAPI retrieved.');
 
       var playlists = await spotifyApi.playlists.me;
       var playlist = playlists.first(1);
 
+      print('Playlist retrieved.');
+
       var searchResults =
           await spotifyApi.search.get('$songName $artist').first(1);
+
+      print('searchResults retrieved.');
 
       searchResults.forEach((pages) {
         pages.items!.forEach((item) async {
@@ -144,52 +150,6 @@ class _DetailsPageState extends State<DetailsPage> {
     }
   }
 
-  // Future<void> addToSpotifyPlaylist(String trackId) async {
-  //   try {
-  //     var spotifyApi = _getSpotifyApi();
-  //     var playlists = await spotifyApi.playlists.me;
-
-  //     var playlistId = playlists.first(1);
-
-  //     await spotifyApi.playlists
-  //         .addTracks(playlistId as List<String>, [trackId] as String);
-
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Song added to playlist.'),
-  //       ),
-  //     );
-  //   } catch (e) {
-  //     print('Error $e');
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Error adding song to playlist.'),
-  //       ),
-  //     );
-  //   }
-  //   // final credentials = spotify.SpotifyApiCredentials(
-  //   //     '0ad20df5fb67498da3ff35945ee37942', 'a00088fd258446ec824830d1e37a3e1d');
-  //   // final grant = spotify.SpotifyApi.authorizationCodeGrant(credentials);
-
-  //   // final redirectUri = 'https://example.com/auth';
-
-  //   // final scopes = [
-  //   //   spotify.AuthorizationScope.user.readEmail,
-  //   //   spotify.AuthorizationScope.library.read
-  //   // ];
-
-  //   // final authUri = grant.getAuthorizationUrl(
-  //   //   Uri.parse(redirectUri),
-  //   //   scopes: scopes, // scopes are optional
-  //   // );
-
-  //   // await launch(authUri.toString(), forceWebView: true);
-
-  //   // final responseUri = await listen(redirectUri);
-
-  //   // final spotifyAPI = spotify.SpotifyApi.fromAuthCodeGrant(grant, responseUri);
-  // }
-
   listen(String redirectUri) async {
     final responseUri = await launch(redirectUri, forceWebView: true);
 
@@ -205,7 +165,7 @@ class _DetailsPageState extends State<DetailsPage> {
     // var keyJson = File('../key.json').readAsStringSync();
     // var keyMap = json.decode(keyJson);
     var credentials = spotify.SpotifyApiCredentials(
-        '0ad20df5fb67498da3ff35945ee37942', 'a00088fd258446ec824830d1e37a3e1d');
+        '0ad20df5fb67498da3ff35945ee37942', 'bb3625e4891247a38be5d5fdaba4275b');
     // var credentials =
     //     spotify.SpotifyApiCredentials(keyMap['id'], keyMap['secret']);
     return spotify.SpotifyApi(credentials);
@@ -368,11 +328,15 @@ class _DetailsPageState extends State<DetailsPage> {
                     ElevatedButton(
                       onPressed: () async {
                         final appAuth = FlutterAppAuth();
+
+                        print('Start authorization request...');
+
                         final AuthorizationTokenResponse? result =
                             await appAuth.authorizeAndExchangeCode(
                           AuthorizationTokenRequest(
                             '0ad20df5fb67498da3ff35945ee37942',
-                            'http://10.0.2.2:5000/callback',
+                            'resonanceapp://callback',
+                            clientSecret: 'bb3625e4891247a38be5d5fdaba4275b',
                             discoveryUrl:
                                 'https://accounts.spotify.com/.well-known/openid-configuration',
                             scopes: <String>[
@@ -383,8 +347,11 @@ class _DetailsPageState extends State<DetailsPage> {
                         );
 
                         if (result != null && result.accessToken != null) {
+                          print('Authorization successful!');
                           addToSpotifyPlaylist(
                               songName, artist, result.accessToken!);
+                        } else {
+                          print('Error');
                         }
                       },
                       child: Text('Add to Spotify Playlist'),

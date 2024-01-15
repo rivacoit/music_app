@@ -6,6 +6,7 @@ import 'package:music_app/components/buttons.dart';
 import 'package:music_app/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:music_app/components/errorutils.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -199,11 +200,12 @@ class _SignUpPageState extends State<SignUpPage> {
       //   ),
       // );
     } catch (e) {
+      String errorMessage = removeErrorCode(e.toString());
       showDialog(
         context: context,
         builder: (context) => ErrorMessage(
           header: "Signup Error",
-          bodyText: e.toString(),
+          bodyText: errorMessage,
         ),
       );
     }
