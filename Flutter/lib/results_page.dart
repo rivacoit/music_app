@@ -61,6 +61,49 @@ class _ResultsPageState extends State<ResultsPage> {
     }
   }
 
+  // Future<bool> _onLike(bool isLiked, int index) async {
+  //   try {
+  //     User? user = FirebaseAuth.instance.currentUser;
+  //     if (user != null && !user.isAnonymous) {
+  //       String userId = user.uid;
+
+  //       DocumentReference userRef =
+  //           FirebaseFirestore.instance.collection('userInfo').doc(userId);
+
+  //       // Add the song to the 'Saved Songs' subcollection
+  //       String title = recommendedSongs.keys.elementAt(index);
+
+  //       DocumentReference savedSongRef =
+  //           userRef.collection('Saved Songs').doc(title);
+
+  //       // Set the song data
+  //       await savedSongRef.set({
+  //         'title': title,
+  //         'timestamp': FieldValue.serverTimestamp(),
+  //       });
+
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('$title added to Saved Songs'),
+  //           duration: Duration(seconds: 2),
+  //         ),
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text(
+  //               '$title failed to add to Saved Songs. Check that you are logged in.'),
+  //           duration: Duration(seconds: 2),
+  //         ),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print('Error adding song: $e');
+  //   }
+
+  //   return !isLiked;
+  // }
+
   Future<void> _predictEmotionAndFetchSongs() async {
     addHistory(widget.inputText);
     const String backendUrl = 'http://127.0.0.1:5000';
@@ -275,6 +318,96 @@ class _ResultsPageState extends State<ResultsPage> {
                                       height: 45,
                                       width: 45,
                                       child: LikeButton(
+                                        onTap: (isLiked) async {
+                                          if (isLiked) {
+                                            User? user = FirebaseAuth
+                                                .instance.currentUser;
+                                            if (user != null &&
+                                                !user.isAnonymous) {
+                                              String userId = user.uid;
+
+                                              DocumentReference userRef =
+                                                  FirebaseFirestore.instance
+                                                      .collection('userInfo')
+                                                      .doc(userId);
+
+                                              // Add the song to the 'Saved Songs' subcollection
+                                              String title = recommendedSongs
+                                                  .keys
+                                                  .elementAt(index);
+                                              DocumentReference savedSongRef =
+                                                  userRef
+                                                      .collection('Saved Songs')
+                                                      .doc(title);
+                                              await savedSongRef.delete();
+
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      '$title deleted from Saved Songs'),
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                ),
+                                              );
+                                            }
+                                          } else {
+                                            try {
+                                              User? user = FirebaseAuth
+                                                  .instance.currentUser;
+                                              if (user != null &&
+                                                  !user.isAnonymous) {
+                                                String userId = user.uid;
+
+                                                DocumentReference userRef =
+                                                    FirebaseFirestore.instance
+                                                        .collection('userInfo')
+                                                        .doc(userId);
+
+                                                // Add the song to the 'Saved Songs' subcollection
+                                                String title = recommendedSongs
+                                                    .keys
+                                                    .elementAt(index);
+
+                                                DocumentReference savedSongRef =
+                                                    userRef
+                                                        .collection(
+                                                            'Saved Songs')
+                                                        .doc(title);
+
+                                                // Set the song data
+                                                await savedSongRef.set({
+                                                  'title': title,
+                                                  'timestamp': FieldValue
+                                                      .serverTimestamp(),
+                                                });
+
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        '$title added to Saved Songs'),
+                                                    duration:
+                                                        Duration(seconds: 2),
+                                                  ),
+                                                );
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        '$title failed to add to Saved Songs. Check that you are logged in.'),
+                                                    duration:
+                                                        Duration(seconds: 2),
+                                                  ),
+                                                );
+                                              }
+                                            } catch (e) {
+                                              print('Error adding song: $e');
+                                            }
+                                          }
+                                          return !isLiked;
+                                        },
                                         size: 40,
                                         circleColor: CircleColor(
                                           start: Color(0xffeebbc3),
