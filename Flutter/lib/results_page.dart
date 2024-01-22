@@ -28,9 +28,30 @@ class _ResultsPageState extends State<ResultsPage> {
 
   @override
   void initState() {
-    super.initState();
     _predictEmotionAndFetchSongs();
-    checkSavedSongs();
+    super.initState();
+  }
+
+  Future<Set<String>> getSavedSongs() async {
+    Set<String> savedSongs = {};
+
+    try {
+      if (user != null && !user!.isAnonymous) {
+        String userID = user!.uid;
+
+        DocumentReference userRef =
+            FirebaseFirestore.instance.collection('userInfo').doc(userID);
+
+        QuerySnapshot savedSongsSnapshot =
+            await userRef.collection('Saved Songs').get();
+
+        savedSongs = savedSongsSnapshot.docs.map((doc) => doc.id).toSet();
+      }
+    } catch (e) {
+      print('Error $e');
+    }
+
+    return savedSongs;
   }
 
   void addHistory(String input) async {
@@ -119,10 +140,6 @@ class _ResultsPageState extends State<ResultsPage> {
   // }
 
   Future<void> _predictEmotionAndFetchSongs() async {
-    setState(() {
-      recommendedSongs = {};
-    });
-
     addHistory(widget.inputText);
     const String backendUrl = 'http://10.0.2.2:5000';
     // Addresses
@@ -168,34 +185,11 @@ class _ResultsPageState extends State<ResultsPage> {
         setState(() {
           recommendedSongs = decodeSongsResponse['recommended_songs'];
         });
-
-        await checkSavedSongs();
       } else {
         print('Error fetching recommended songs: ${songsResponse.statusCode}');
       }
     } catch (e) {
       print('Error $e');
-    }
-  }
-
-  Future<void> checkSavedSongs() async {
-    if (user != null && !user!.isAnonymous) {
-      String userID = user!.uid;
-
-      DocumentReference userRef =
-          FirebaseFirestore.instance.collection('userInfo').doc(userID);
-
-      QuerySnapshot savedSongsSnapshot =
-          await userRef.collection('Saved Songs').get();
-
-      Set<String> savedSongsTitles =
-          savedSongsSnapshot.docs.map((doc) => doc['title'].toString()).toSet();
-
-      setState(() {
-        recommendedSongs.forEach((title, _) {
-          recommendedSongs[title]['isLiked'] = savedSongsTitles.contains(title);
-        });
-      });
     }
   }
 
@@ -303,259 +297,284 @@ class _ResultsPageState extends State<ResultsPage> {
                             itemBuilder: (context, index) {
                               String title =
                                   recommendedSongs.keys.elementAt(index);
-                              bool isLiked =
-                                  recommendedSongs[title]['isLiked'] ?? false;
-                              return Container(
-                                margin: EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 6,
-                                ),
-                                child: ListTile(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: Color(0xFF232946), width: 1),
-                                      borderRadius: BorderRadius.circular(0),
-                                    ),
-                                    title: ElevatedButton(
-                                      style: ButtonStyle(
-                                        elevation:
-                                            MaterialStatePropertyAll<double>(
-                                                0.0),
-                                        backgroundColor:
-                                            MaterialStatePropertyAll<Color>(
-                                                Colors.transparent),
-                                        padding: MaterialStatePropertyAll<
-                                            EdgeInsetsGeometry>(
-                                          EdgeInsets.fromLTRB(
-                                            4,
-                                            0,
-                                            0,
-                                            0,
-                                          ),
-                                        ),
+                              return FutureBuilder<Set<String>>(
+                                  future: getSavedSongs(),
+                                  builder: (context, snapshot) {
+                                    Set<String> userSavedSongs =
+                                        snapshot.data ?? {};
+
+                                    bool isSongSaved =
+                                        userSavedSongs.contains(title);
+
+                                    return Container(
+                                      margin: EdgeInsets.symmetric(
+                                        vertical: 8,
+                                        horizontal: 6,
                                       ),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: MarqueeWidget(
-                                          direction: Axis.horizontal,
-                                          child: Text(
-                                            title,
-                                            style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              color: Colors.black,
+                                      child: ListTile(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                                color: Color(0xFF232946),
+                                                width: 1),
+                                            borderRadius:
+                                                BorderRadius.circular(0),
+                                          ),
+                                          title: ElevatedButton(
+                                            style: ButtonStyle(
+                                              elevation:
+                                                  MaterialStatePropertyAll<
+                                                      double>(0.0),
+                                              backgroundColor:
+                                                  MaterialStatePropertyAll<
+                                                          Color>(
+                                                      Colors.transparent),
+                                              padding: MaterialStatePropertyAll<
+                                                  EdgeInsetsGeometry>(
+                                                EdgeInsets.fromLTRB(
+                                                  4,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                DetailsPage(songInfo: title),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    trailing: SizedBox(
-                                      height: 45,
-                                      width: 45,
-                                      child: LikeButton(
-                                        onTap: (isLiked) async {
-                                          if (isLiked) {
-                                            User? user = FirebaseAuth
-                                                .instance.currentUser;
-                                            if (user != null &&
-                                                !user.isAnonymous) {
-                                              String userId = user.uid;
-
-                                              DocumentReference userRef =
-                                                  FirebaseFirestore.instance
-                                                      .collection('userInfo')
-                                                      .doc(userId);
-
-                                              String title = recommendedSongs
-                                                  .keys
-                                                  .elementAt(index);
-                                              DocumentReference savedSongRef =
-                                                  userRef
-                                                      .collection('Saved Songs')
-                                                      .doc(title);
-                                              await savedSongRef.delete();
-
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      '$title deleted from Saved Songs'),
-                                                  duration:
-                                                      Duration(seconds: 2),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: MarqueeWidget(
+                                                direction: Axis.horizontal,
+                                                child: Text(
+                                                  title,
+                                                  style: TextStyle(
+                                                    fontFamily: "Poppins",
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DetailsPage(
+                                                          songInfo: title),
                                                 ),
                                               );
-                                            }
-                                          } else {
-                                            try {
-                                              User? user = FirebaseAuth
-                                                  .instance.currentUser;
-                                              if (user != null &&
-                                                  !user.isAnonymous) {
-                                                String userId = user.uid;
+                                            },
+                                          ),
+                                          trailing: SizedBox(
+                                            height: 45,
+                                            width: 45,
+                                            child: LikeButton(
+                                              isLiked: isSongSaved,
+                                              onTap: (isLiked) async {
+                                                if (isLiked) {
+                                                  User? user = FirebaseAuth
+                                                      .instance.currentUser;
+                                                  if (user != null &&
+                                                      !user.isAnonymous) {
+                                                    String userId = user.uid;
 
-                                                DocumentReference userRef =
-                                                    FirebaseFirestore.instance
-                                                        .collection('userInfo')
-                                                        .doc(userId);
+                                                    DocumentReference userRef =
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'userInfo')
+                                                            .doc(userId);
 
-                                                // Add the song to the 'Saved Songs' subcollection
-                                                String title = recommendedSongs
-                                                    .keys
-                                                    .elementAt(index);
+                                                    String title =
+                                                        recommendedSongs.keys
+                                                            .elementAt(index);
+                                                    DocumentReference
+                                                        savedSongRef = userRef
+                                                            .collection(
+                                                                'Saved Songs')
+                                                            .doc(title);
+                                                    await savedSongRef.delete();
 
-                                                DocumentReference savedSongRef =
-                                                    userRef
-                                                        .collection(
-                                                            'Saved Songs')
-                                                        .doc(title);
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                            '$title deleted from Saved Songs'),
+                                                        duration: Duration(
+                                                            seconds: 2),
+                                                      ),
+                                                    );
+                                                  }
+                                                } else {
+                                                  try {
+                                                    User? user = FirebaseAuth
+                                                        .instance.currentUser;
+                                                    if (user != null &&
+                                                        !user.isAnonymous) {
+                                                      String userId = user.uid;
 
-                                                // Set the song data
-                                                await savedSongRef.set({
-                                                  'title': title,
-                                                  'timestamp': FieldValue
-                                                      .serverTimestamp(),
-                                                });
+                                                      DocumentReference userRef =
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'userInfo')
+                                                              .doc(userId);
 
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                        '$title added to Saved Songs'),
-                                                    duration:
-                                                        Duration(seconds: 2),
-                                                  ),
-                                                );
-                                              } else {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                        '$title failed to add to Saved Songs. Check that you are logged in.'),
-                                                    duration:
-                                                        Duration(seconds: 2),
-                                                  ),
-                                                );
-                                              }
-                                            } catch (e) {
-                                              print('Error adding song: $e');
-                                            }
-                                          }
-                                          return !isLiked;
-                                        },
-                                        size: 40,
-                                        circleColor: CircleColor(
-                                          start: Color(0xffeebbc3),
-                                          end: Color(0xffeebbc3),
-                                        ),
-                                        bubblesColor: BubblesColor(
-                                          dotPrimaryColor: Color(0xFf232946),
-                                          dotSecondaryColor: Color(0xffb8c1ec),
-                                        ),
-                                        likeBuilder: (bool isLiked) {
-                                          // return Icon(
-                                          //   Icons.favorite,
-                                          //   color: isLiked
-                                          //       ? Color(0xFf232946)
-                                          //       : Colors.grey,
-                                          //   size: 25,
-                                          // );
-                                          return isLiked
-                                              ? Icon(
-                                                  Icons.favorite,
-                                                  color: const Color.fromARGB(
-                                                      255, 239, 86, 75),
-                                                )
-                                              : Icon(
-                                                  Icons
-                                                      .favorite_border_outlined,
-                                                  color: Colors.grey,
-                                                );
-                                        },
-                                      ),
-                                    )
-                                    // trailing: IconButton(
-                                    //   icon: const Icon(
-                                    //     Icons.add,
-                                    //     color: Color(0xFF232946),
-                                    //   ),
-                                    //   style: ButtonStyle(
-                                    //     backgroundColor:
-                                    //         MaterialStatePropertyAll<Color>(
-                                    //             Colors.transparent),
-                                    //     padding: MaterialStatePropertyAll<
-                                    //         EdgeInsetsGeometry>(
-                                    //       EdgeInsets.fromLTRB(
-                                    //         0,
-                                    //         0,
-                                    //         0,
-                                    //         0,
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    //   onPressed: () async {
-                                    //     try {
-                                    //       User? user =
-                                    //           FirebaseAuth.instance.currentUser;
-                                    //       if (user != null && !user.isAnonymous) {
-                                    //         String userId = user.uid;
+                                                      // Add the song to the 'Saved Songs' subcollection
+                                                      String title =
+                                                          recommendedSongs.keys
+                                                              .elementAt(index);
 
-                                    //         DocumentReference userRef =
-                                    //             FirebaseFirestore.instance
-                                    //                 .collection('userInfo')
-                                    //                 .doc(userId);
+                                                      DocumentReference
+                                                          savedSongRef = userRef
+                                                              .collection(
+                                                                  'Saved Songs')
+                                                              .doc(title);
 
-                                    //         // Add the song to the 'Saved Songs' subcollection
-                                    //         String title = recommendedSongs.keys
-                                    //             .elementAt(index);
+                                                      // Set the song data
+                                                      await savedSongRef.set({
+                                                        'title': title,
+                                                        'timestamp': FieldValue
+                                                            .serverTimestamp(),
+                                                      });
 
-                                    //         DocumentReference savedSongRef =
-                                    //             userRef
-                                    //                 .collection('Saved Songs')
-                                    //                 .doc(title);
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                              '$title added to Saved Songs'),
+                                                          duration: Duration(
+                                                              seconds: 2),
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                              '$title failed to add to Saved Songs. Check that you are logged in.'),
+                                                          duration: Duration(
+                                                              seconds: 2),
+                                                        ),
+                                                      );
+                                                    }
+                                                  } catch (e) {
+                                                    print(
+                                                        'Error adding song: $e');
+                                                  }
+                                                }
+                                                return !isLiked;
+                                              },
+                                              size: 40,
+                                              circleColor: CircleColor(
+                                                start: Color(0xffeebbc3),
+                                                end: Color(0xffeebbc3),
+                                              ),
+                                              bubblesColor: BubblesColor(
+                                                dotPrimaryColor:
+                                                    Color(0xFf232946),
+                                                dotSecondaryColor:
+                                                    Color(0xffb8c1ec),
+                                              ),
+                                              likeBuilder: (bool isLiked) {
+                                                // return Icon(
+                                                //   Icons.favorite,
+                                                //   color: isLiked
+                                                //       ? Color(0xFf232946)
+                                                //       : Colors.grey,
+                                                //   size: 25,
+                                                // );
+                                                return isLiked
+                                                    ? Icon(
+                                                        Icons.favorite,
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            255, 239, 86, 75),
+                                                      )
+                                                    : Icon(
+                                                        Icons
+                                                            .favorite_border_outlined,
+                                                        color: Colors.grey,
+                                                      );
+                                              },
+                                            ),
+                                          )
+                                          // trailing: IconButton(
+                                          //   icon: const Icon(
+                                          //     Icons.add,
+                                          //     color: Color(0xFF232946),
+                                          //   ),
+                                          //   style: ButtonStyle(
+                                          //     backgroundColor:
+                                          //         MaterialStatePropertyAll<Color>(
+                                          //             Colors.transparent),
+                                          //     padding: MaterialStatePropertyAll<
+                                          //         EdgeInsetsGeometry>(
+                                          //       EdgeInsets.fromLTRB(
+                                          //         0,
+                                          //         0,
+                                          //         0,
+                                          //         0,
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          //   onPressed: () async {
+                                          //     try {
+                                          //       User? user =
+                                          //           FirebaseAuth.instance.currentUser;
+                                          //       if (user != null && !user.isAnonymous) {
+                                          //         String userId = user.uid;
 
-                                    //         // Set the song data
-                                    //         await savedSongRef.set({
-                                    //           'title': title,
-                                    //           'timestamp':
-                                    //               FieldValue.serverTimestamp(),
-                                    //         });
+                                          //         DocumentReference userRef =
+                                          //             FirebaseFirestore.instance
+                                          //                 .collection('userInfo')
+                                          //                 .doc(userId);
 
-                                    //         ScaffoldMessenger.of(context)
-                                    //             .showSnackBar(
-                                    //           SnackBar(
-                                    //             content: Text(
-                                    //                 '$title added to Saved Songs'),
-                                    //             duration: Duration(seconds: 2),
-                                    //           ),
-                                    //         );
-                                    //       } else {
-                                    //         ScaffoldMessenger.of(context)
-                                    //             .showSnackBar(
-                                    //           SnackBar(
-                                    //             content: Text(
-                                    //                 '$title failed to add to Saved Songs. Check that you are logged in.'),
-                                    //             duration: Duration(seconds: 2),
-                                    //           ),
-                                    //         );
-                                    //       }
-                                    //     } catch (e) {
-                                    //       print('Error adding song: $e');
-                                    //     }
-                                    //     // Add a function that will add the song to the user's collection ('Saved Songs')
-                                    //     // Ideally stored in a collection called userInfo with the doc name as the user.id
-                                    //     // Make sure to do checks to see whether or not song already exists/saved in the 'Saved Songs'
-                                    //   },
-                                    // ),
-                                    ),
-                              );
+                                          //         // Add the song to the 'Saved Songs' subcollection
+                                          //         String title = recommendedSongs.keys
+                                          //             .elementAt(index);
+
+                                          //         DocumentReference savedSongRef =
+                                          //             userRef
+                                          //                 .collection('Saved Songs')
+                                          //                 .doc(title);
+
+                                          //         // Set the song data
+                                          //         await savedSongRef.set({
+                                          //           'title': title,
+                                          //           'timestamp':
+                                          //               FieldValue.serverTimestamp(),
+                                          //         });
+
+                                          //         ScaffoldMessenger.of(context)
+                                          //             .showSnackBar(
+                                          //           SnackBar(
+                                          //             content: Text(
+                                          //                 '$title added to Saved Songs'),
+                                          //             duration: Duration(seconds: 2),
+                                          //           ),
+                                          //         );
+                                          //       } else {
+                                          //         ScaffoldMessenger.of(context)
+                                          //             .showSnackBar(
+                                          //           SnackBar(
+                                          //             content: Text(
+                                          //                 '$title failed to add to Saved Songs. Check that you are logged in.'),
+                                          //             duration: Duration(seconds: 2),
+                                          //           ),
+                                          //         );
+                                          //       }
+                                          //     } catch (e) {
+                                          //       print('Error adding song: $e');
+                                          //     }
+                                          //     // Add a function that will add the song to the user's collection ('Saved Songs')
+                                          //     // Ideally stored in a collection called userInfo with the doc name as the user.id
+                                          //     // Make sure to do checks to see whether or not song already exists/saved in the 'Saved Songs'
+                                          //   },
+                                          // ),
+                                          ),
+                                    );
+                                  });
                             },
                           ),
                         ],
