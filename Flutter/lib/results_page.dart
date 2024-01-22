@@ -103,6 +103,19 @@ class _ResultsPageState extends State<ResultsPage> {
 
   //   return !isLiked;
   // }
+  // bool docExists(docName, docId) async {
+  //   String userId = user!.uid;
+  //   const docRef =
+  //       FirebaseFirestore.instance.collection('userInfo').doc(userId);
+
+  //   docSnapshot = await docRef.get();
+
+  //   if (docSnapshot.exists) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   Future<void> _predictEmotionAndFetchSongs() async {
     addHistory(widget.inputText);
