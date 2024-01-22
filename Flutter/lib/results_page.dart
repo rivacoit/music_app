@@ -24,12 +24,13 @@ class ResultsPage extends StatefulWidget {
 class _ResultsPageState extends State<ResultsPage> {
   String predictedEmotion = '';
   Map<String, dynamic> recommendedSongs = {};
-
   User? user = FirebaseAuth.instance.currentUser;
+
   @override
   void initState() {
-    _predictEmotionAndFetchSongs();
     super.initState();
+    _predictEmotionAndFetchSongs();
+    checkSavedSongs();
   }
 
   void addHistory(String input) async {
@@ -118,8 +119,12 @@ class _ResultsPageState extends State<ResultsPage> {
   // }
 
   Future<void> _predictEmotionAndFetchSongs() async {
+    setState(() {
+      recommendedSongs = {};
+    });
+
     addHistory(widget.inputText);
-    const String backendUrl = 'http://127.0.0.1:5000';
+    const String backendUrl = 'http://10.0.2.2:5000';
     // Addresses
     // Android: http://10.0.2.2:5000
     // iOS: http://127.0.0.1:5000
@@ -163,11 +168,34 @@ class _ResultsPageState extends State<ResultsPage> {
         setState(() {
           recommendedSongs = decodeSongsResponse['recommended_songs'];
         });
+
+        await checkSavedSongs();
       } else {
         print('Error fetching recommended songs: ${songsResponse.statusCode}');
       }
     } catch (e) {
       print('Error $e');
+    }
+  }
+
+  Future<void> checkSavedSongs() async {
+    if (user != null && !user!.isAnonymous) {
+      String userID = user!.uid;
+
+      DocumentReference userRef =
+          FirebaseFirestore.instance.collection('userInfo').doc(userID);
+
+      QuerySnapshot savedSongsSnapshot =
+          await userRef.collection('Saved Songs').get();
+
+      Set<String> savedSongsTitles =
+          savedSongsSnapshot.docs.map((doc) => doc['title'].toString()).toSet();
+
+      setState(() {
+        recommendedSongs.forEach((title, _) {
+          recommendedSongs[title]['isLiked'] = savedSongsTitles.contains(title);
+        });
+      });
     }
   }
 
@@ -275,6 +303,8 @@ class _ResultsPageState extends State<ResultsPage> {
                             itemBuilder: (context, index) {
                               String title =
                                   recommendedSongs.keys.elementAt(index);
+                              bool isLiked =
+                                  recommendedSongs[title]['isLiked'] ?? false;
                               return Container(
                                 margin: EdgeInsets.symmetric(
                                   vertical: 8,
@@ -344,7 +374,6 @@ class _ResultsPageState extends State<ResultsPage> {
                                                       .collection('userInfo')
                                                       .doc(userId);
 
-                                              // Add the song to the 'Saved Songs' subcollection
                                               String title = recommendedSongs
                                                   .keys
                                                   .elementAt(index);
