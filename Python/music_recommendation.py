@@ -6,27 +6,29 @@ db = initialize_firestore_app()
 data = get_all_data(db, "musicRecommendation")
 
 def fetch_music_based_on_emotion(emotion):
+    # print(data[emotion])
     return data[emotion]
 
 
 def fetch_music_based_on_activity(emotion, text):
 # def fetch_music_based_on_activity(text):
-    result = []
+    result = {}
     s = text.split()
     s = get_stem(s)
     for emotion, song_list in data.items():
         # print(song_list)
         for name, song_info in song_list.items():
-            # print(name)
-            # print(song_info)
+            # print('NAME:', name)
             song_info = data[emotion][name]
             keywords = song_info['keywords']
-            # print(song_info)
+            # print('SONG INFO:', song_info)
             # print(keywords)
             for word in s:
                 if word in keywords:
-                    print(name)
-                    result.append(name)
+                    # print(name)
+                    # print(song_info)
+                    result.update(song_info)
+    # print('RESULT:', result)
     return result
 
 

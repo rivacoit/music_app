@@ -488,7 +488,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                                     ? Icon(
                                                         Icons.favorite,
                                                         color: const Color
-                                                                .fromARGB(
+                                                            .fromARGB(
                                                             255, 239, 86, 75),
                                                       )
                                                     : Icon(

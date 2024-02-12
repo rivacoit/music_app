@@ -113,38 +113,42 @@ class _DetailsPageState extends State<DetailsPage> {
     }
   }
 
-  Future<void> addToSpotifyPlaylist(
-      String songName, String artist, String accessToken) async {
+  Future<void> addToSpotifyPlaylist(String songName, String artist,
+      String accessToken, String refreshToken) async {
     try {
       print('Getting SpotifyAPI');
-      var spotifyApi = _getSpotifyApiWithToken(accessToken);
+      var spotifyApi = _getSpotifyApiWithToken(accessToken, refreshToken);
       print('SpotifyAPI retrieved.');
 
-      var playlists = await spotifyApi.playlists.me;
-      var playlist = playlists.first(1);
+      // var playlist = playlists.first(1);
 
-      print('Playlist retrieved.');
+      // print(playlists);
 
-      var searchResults =
-          await spotifyApi.search.get('$songName $artist').first(1);
+      // print('Playlist retrieved.');
+      // print(playlist);
 
-      print('searchResults retrieved.');
+      print('Search Query: $songName $artist');
 
-      searchResults.forEach((pages) {
-        pages.items!.forEach((item) async {
-          if (item is spotify.Track) {
-            print('id: ${item.id}\n'
-                'name: ${item.name}\n');
+      // var searchResults =
+      //     await spotifyApi.search.get('$songName $artist').first(1);
 
-            var trackUrl = 'https://open.spotify.com/track/${item.id}';
-            if (await canLaunch(trackUrl)) {
-              await launch(trackUrl);
-            } else {
-              print('Could not launch $trackUrl');
-            }
-          }
-        });
-      });
+      // print('searchResults retrieved.');
+
+      // searchResults.forEach((pages) {
+      //   pages.items!.forEach((item) async {
+      //     if (item is spotify.Track) {
+      //       print('id: ${item.id}\n'
+      //           'name: ${item.name}\n');
+
+      //       var trackUrl = 'https://open.spotify.com/track/${item.id}';
+      //       if (await canLaunch(trackUrl)) {
+      //         await launch(trackUrl);
+      //       } else {
+      //         print('Could not launch $trackUrl');
+      //       }
+      //     }
+      //   });
+      // });
     } catch (e) {
       print('Error: $e');
     }
@@ -171,10 +175,24 @@ class _DetailsPageState extends State<DetailsPage> {
     return spotify.SpotifyApi(credentials);
   }
 
-  spotify.SpotifyApi _getSpotifyApiWithToken(String accessToken) {
-    var credentials =
-        spotify.SpotifyApiCredentials.withAccessToken(accessToken);
-    return spotify.SpotifyApi(credentials);
+  spotify.SpotifyApi _getSpotifyApiWithToken(
+      String accessToken, String refreshToken) {
+    var credentials = spotify.SpotifyApiCredentials(
+        '0ad20df5fb67498da3ff35945ee37942', 'bb3625e4891247a38be5d5fdaba4275b',
+        accessToken: accessToken, refreshToken: refreshToken);
+    var spotifyApi = spotify.SpotifyApi(credentials);
+
+    // // Check if the access token is expired
+    // if (credentials.isExpired) {
+    //   // If expired, refresh the access token using the refresh token
+    //   credentials.refreshToken!;
+    //   print('Token refreshed');
+
+    //   // Update the Spotify API instance with the new access token
+    //   spotifyApi = spotify.SpotifyApi(credentials);
+    // }
+
+    return spotifyApi;
   }
 
   @override
@@ -336,20 +354,30 @@ class _DetailsPageState extends State<DetailsPage> {
                           AuthorizationTokenRequest(
                             '0ad20df5fb67498da3ff35945ee37942',
                             'resonanceapp://callback',
-                            clientSecret: 'bb3625e4891247a38be5d5fdaba4275b',
                             discoveryUrl:
                                 'https://accounts.spotify.com/.well-known/openid-configuration',
                             scopes: <String>[
                               'user-read-private',
                               'playlist-modify-public',
+                              // 'playlist-modify-private',
+                              // 'playlist-read-collaborative',
+                              // 'playlist-read-private',
                             ],
+                            clientSecret: 'bb3625e4891247a38be5d5fdaba4275b',
                           ),
                         );
 
-                        if (result != null && result.accessToken != null) {
+                        print('Access Token: ${result!.accessToken}');
+                        print('Access Scopes: ${result.scopes}');
+                        print(
+                            'Access Expire Time: ${result.accessTokenExpirationDateTime}');
+
+                        if (result != null &&
+                            result.accessToken != null &&
+                            result.refreshToken != null) {
                           print('Authorization successful!');
-                          addToSpotifyPlaylist(
-                              songName, artist, result.accessToken!);
+                          addToSpotifyPlaylist(songName, artist,
+                              result.accessToken!, result.refreshToken!);
                         } else {
                           print('Error');
                         }
