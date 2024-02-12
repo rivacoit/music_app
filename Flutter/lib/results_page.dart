@@ -141,7 +141,7 @@ class _ResultsPageState extends State<ResultsPage> {
 
   Future<void> _predictEmotionAndFetchSongs() async {
     addHistory(widget.inputText);
-    const String backendUrl = 'http://10.0.2.2:5000';
+    const String backendUrl = 'http://127.0.0.1:5000';
     // Addresses
     // Android: http://10.0.2.2:5000
     // iOS: http://127.0.0.1:5000
@@ -488,7 +488,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                                     ? Icon(
                                                         Icons.favorite,
                                                         color: const Color
-                                                            .fromARGB(
+                                                                .fromARGB(
                                                             255, 239, 86, 75),
                                                       )
                                                     : Icon(
