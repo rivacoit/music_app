@@ -167,16 +167,16 @@ class _ResultsPageState extends State<ResultsPage> {
         print('Error: ${response.statusCode}');
       }
 
-      final songsResponse = await http.get(
-        Uri.parse('$backendUrl/recommendation?emotion=$predictedEmotion'),
-      );
-
-      // const String testText = 'cry';
-
       // final songsResponse = await http.get(
-      //   Uri.parse(
-      //       '$backendUrl/recommendation_by_activity?emotion=$predictedEmotion&userinput=$testText'),
+      //   Uri.parse('$backendUrl/recommendation?emotion=$predictedEmotion'),
       // );
+
+      const String testText = 'cry';
+
+      final songsResponse = await http.get(
+        Uri.parse(
+            '$backendUrl/recommendation_by_activity?emotion=$predictedEmotion&userinput=$testText'),
+      );
 
       if (songsResponse.statusCode == 200) {
         print(songsResponse.body);
@@ -488,7 +488,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                                     ? Icon(
                                                         Icons.favorite,
                                                         color: const Color
-                                                            .fromARGB(
+                                                                .fromARGB(
                                                             255, 239, 86, 75),
                                                       )
                                                     : Icon(

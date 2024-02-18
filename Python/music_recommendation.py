@@ -15,20 +15,21 @@ def fetch_music_based_on_activity(emotion, text):
     result = {}
     s = text.split()
     s = get_stem(s)
-    for emotion, song_list in data.items():
-        # print(song_list)
-        for name, song_info in song_list.items():
-            # print('NAME:', name)
-            song_info = data[emotion][name]
-            keywords = song_info['keywords']
-            # print('SONG INFO:', song_info)
-            # print(keywords)
-            for word in s:
-                if word in keywords:
-                    # print(name)
-                    # print(song_info)
-                    result.update(song_info)
-    # print('RESULT:', result)
+    for eachemotion, song_list in data.items():
+        if (eachemotion == emotion):
+            # print(song_list)
+            for name, song_info in song_list.items():
+                # print('NAME:', name)
+                song_info = data[emotion][name]
+                keywords = song_info['keywords']
+                # print('SONG INFO:', song_info)
+                # print(keywords)
+                for word in s:
+                    if word in keywords:
+                        # print(name)
+                        # print(song_info)
+                        result.update({name: song_info})
+        # print('RESULT:', result)
     return result
 
 
