@@ -8,7 +8,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:music_app/results_page.dart';
 import 'package:music_app/home_page.dart';
 import 'package:music_app/login.dart';
-import 'package:music_app/lyrics_analysis_page.dart';
 import 'package:music_app/search.dart';
 import "package:music_app/signup.dart";
 import 'package:music_app/components/buttons.dart';

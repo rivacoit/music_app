@@ -83,65 +83,9 @@ class _ResultsPageState extends State<ResultsPage> {
     }
   }
 
-  // Future<bool> _onLike(bool isLiked, int index) async {
-  //   try {
-  //     User? user = FirebaseAuth.instance.currentUser;
-  //     if (user != null && !user.isAnonymous) {
-  //       String userId = user.uid;
-
-  //       DocumentReference userRef =
-  //           FirebaseFirestore.instance.collection('userInfo').doc(userId);
-
-  //       // Add the song to the 'Saved Songs' subcollection
-  //       String title = recommendedSongs.keys.elementAt(index);
-
-  //       DocumentReference savedSongRef =
-  //           userRef.collection('Saved Songs').doc(title);
-
-  //       // Set the song data
-  //       await savedSongRef.set({
-  //         'title': title,
-  //         'timestamp': FieldValue.serverTimestamp(),
-  //       });
-
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text('$title added to Saved Songs'),
-  //           duration: Duration(seconds: 2),
-  //         ),
-  //       );
-  //     } else {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text(
-  //               '$title failed to add to Saved Songs. Check that you are logged in.'),
-  //           duration: Duration(seconds: 2),
-  //         ),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     print('Error adding song: $e');
-  //   }
-
-  //   return !isLiked;
-  // }
-  // bool docExists(docName, docId) async {
-  //   String userId = user!.uid;
-  //   const docRef =
-  //       FirebaseFirestore.instance.collection('userInfo').doc(userId);
-
-  //   docSnapshot = await docRef.get();
-
-  //   if (docSnapshot.exists) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
   Future<void> _predictEmotionAndFetchSongs() async {
     addHistory(widget.inputText);
-    const String backendUrl = 'http://127.0.0.1:5000';
+    const String backendUrl = 'http://10.0.2.2:5000';
     // Addresses
     // Android: http://10.0.2.2:5000
     // iOS: http://127.0.0.1:5000
@@ -171,11 +115,11 @@ class _ResultsPageState extends State<ResultsPage> {
       //   Uri.parse('$backendUrl/recommendation?emotion=$predictedEmotion'),
       // );
 
-      const String testText = 'cry';
+      final String userInputText = widget.inputText;
 
       final songsResponse = await http.get(
         Uri.parse(
-            '$backendUrl/recommendation_by_activity?emotion=$predictedEmotion&userinput=$testText'),
+            '$backendUrl/recommendation_by_activity?emotion=$predictedEmotion&userinput=$userInputText'),
       );
 
       if (songsResponse.statusCode == 200) {
@@ -488,7 +432,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                                     ? Icon(
                                                         Icons.favorite,
                                                         color: const Color
-                                                                .fromARGB(
+                                                            .fromARGB(
                                                             255, 239, 86, 75),
                                                       )
                                                     : Icon(
@@ -498,81 +442,7 @@ class _ResultsPageState extends State<ResultsPage> {
                                                       );
                                               },
                                             ),
-                                          )
-                                          // trailing: IconButton(
-                                          //   icon: const Icon(
-                                          //     Icons.add,
-                                          //     color: Color(0xFF232946),
-                                          //   ),
-                                          //   style: ButtonStyle(
-                                          //     backgroundColor:
-                                          //         MaterialStatePropertyAll<Color>(
-                                          //             Colors.transparent),
-                                          //     padding: MaterialStatePropertyAll<
-                                          //         EdgeInsetsGeometry>(
-                                          //       EdgeInsets.fromLTRB(
-                                          //         0,
-                                          //         0,
-                                          //         0,
-                                          //         0,
-                                          //       ),
-                                          //     ),
-                                          //   ),
-                                          //   onPressed: () async {
-                                          //     try {
-                                          //       User? user =
-                                          //           FirebaseAuth.instance.currentUser;
-                                          //       if (user != null && !user.isAnonymous) {
-                                          //         String userId = user.uid;
-
-                                          //         DocumentReference userRef =
-                                          //             FirebaseFirestore.instance
-                                          //                 .collection('userInfo')
-                                          //                 .doc(userId);
-
-                                          //         // Add the song to the 'Saved Songs' subcollection
-                                          //         String title = recommendedSongs.keys
-                                          //             .elementAt(index);
-
-                                          //         DocumentReference savedSongRef =
-                                          //             userRef
-                                          //                 .collection('Saved Songs')
-                                          //                 .doc(title);
-
-                                          //         // Set the song data
-                                          //         await savedSongRef.set({
-                                          //           'title': title,
-                                          //           'timestamp':
-                                          //               FieldValue.serverTimestamp(),
-                                          //         });
-
-                                          //         ScaffoldMessenger.of(context)
-                                          //             .showSnackBar(
-                                          //           SnackBar(
-                                          //             content: Text(
-                                          //                 '$title added to Saved Songs'),
-                                          //             duration: Duration(seconds: 2),
-                                          //           ),
-                                          //         );
-                                          //       } else {
-                                          //         ScaffoldMessenger.of(context)
-                                          //             .showSnackBar(
-                                          //           SnackBar(
-                                          //             content: Text(
-                                          //                 '$title failed to add to Saved Songs. Check that you are logged in.'),
-                                          //             duration: Duration(seconds: 2),
-                                          //           ),
-                                          //         );
-                                          //       }
-                                          //     } catch (e) {
-                                          //       print('Error adding song: $e');
-                                          //     }
-                                          //     // Add a function that will add the song to the user's collection ('Saved Songs')
-                                          //     // Ideally stored in a collection called userInfo with the doc name as the user.id
-                                          //     // Make sure to do checks to see whether or not song already exists/saved in the 'Saved Songs'
-                                          //   },
-                                          // ),
-                                          ),
+                                          )),
                                     );
                                   });
                             },

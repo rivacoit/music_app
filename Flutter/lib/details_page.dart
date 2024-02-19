@@ -18,6 +18,8 @@ import 'package:uni_links/uni_links.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
+import 'package:jwt_decode/jwt_decode.dart';
+
 class DetailsPage extends StatefulWidget {
   final String songInfo;
   const DetailsPage({required this.songInfo});
@@ -129,28 +131,72 @@ class _DetailsPageState extends State<DetailsPage> {
 
       print('Search Query: $songName $artist');
 
-      // var searchResults =
-      //     await spotifyApi.search.get('$songName $artist').first(1);
+      var searchResults =
+          await spotifyApi.search.get('$songName $artist').first(1);
 
-      // print('searchResults retrieved.');
+      // print(searchResults);
 
-      // searchResults.forEach((pages) {
-      //   pages.items!.forEach((item) async {
-      //     if (item is spotify.Track) {
-      //       print('id: ${item.id}\n'
-      //           'name: ${item.name}\n');
+      print('searchResults retrieved.');
 
-      //       var trackUrl = 'https://open.spotify.com/track/${item.id}';
-      //       if (await canLaunch(trackUrl)) {
-      //         await launch(trackUrl);
-      //       } else {
-      //         print('Could not launch $trackUrl');
-      //       }
-      //     }
-      //   });
-      // });
+      searchResults.forEach((pages) {
+        pages.items!.forEach((item) async {
+          if (item is spotify.Track) {
+            print('id: ${item.id}\n'
+                'name: ${item.name}\n');
+
+            // var decodedToken = Jwt.parseJwt(accessToken);
+            // var userId = decodedToken['sub'];
+
+            // print('Decoded Token');
+
+            var userId;
+            try {
+              userId = getUserId(accessToken);
+            } catch (e) {
+              print('Error getting userId: $e');
+              return;
+            }
+
+            // var playlists = spotifyApi.playlists.getUsersPlaylists(userId);
+
+            var resonancePlaylist = await spotifyApi.playlists.createPlaylist(
+                userId, 'Resonance',
+                description:
+                    'This is a generated playlist for the app Resonance.');
+
+            print('Generated playlist');
+
+            await spotifyApi.playlists
+                .addTrack([item.uri] as String, resonancePlaylist.id!);
+
+            print('Added to playlist');
+
+            // if (await canLaunch(trackUrl)) {
+            //   await launch(trackUrl);
+            // } else {
+            //   print('Could not launch $trackUrl');
+            // }
+          }
+        });
+      });
     } catch (e) {
       print('Error: $e');
+    }
+  }
+
+  Future<String> getUserId(String accessToken) async {
+    print('ABOUT TO RESPOND');
+    var response = await http.get(
+      Uri.parse('https://api.spotify.com/v1/me'),
+      headers: {'Authorization': 'Bearer $accessToken'},
+    ).timeout(Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      print('RESPONDED');
+      var body = json.decode(response.body);
+      return body['id'];
+    } else {
+      throw Exception('Failed to fetch user profile: ${response.statusCode}');
     }
   }
 
