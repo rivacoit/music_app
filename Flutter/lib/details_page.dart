@@ -138,26 +138,17 @@ class _DetailsPageState extends State<DetailsPage> {
 
       print('searchResults retrieved.');
 
+      final userId = await getUserId(accessToken);
+      if (userId == null) {
+        print('Failed to get userId');
+        return;
+      }
+
       searchResults.forEach((pages) {
         pages.items!.forEach((item) async {
           if (item is spotify.Track) {
             print('id: ${item.id}\n'
                 'name: ${item.name}\n');
-
-            // var decodedToken = Jwt.parseJwt(accessToken);
-            // var userId = decodedToken['sub'];
-
-            // print('Decoded Token');
-
-            var userId;
-            try {
-              userId = getUserId(accessToken);
-            } catch (e) {
-              print('Error getting userId: $e');
-              return;
-            }
-
-            // var playlists = spotifyApi.playlists.getUsersPlaylists(userId);
 
             var resonancePlaylist = await spotifyApi.playlists.createPlaylist(
                 userId, 'Resonance',
@@ -184,19 +175,25 @@ class _DetailsPageState extends State<DetailsPage> {
     }
   }
 
-  Future<String> getUserId(String accessToken) async {
-    print('ABOUT TO RESPOND');
-    var response = await http.get(
-      Uri.parse('https://api.spotify.com/v1/me'),
-      headers: {'Authorization': 'Bearer $accessToken'},
-    ).timeout(Duration(seconds: 5));
+  Future<String?> getUserId(String accessToken) async {
+    try {
+      final response =
+          await http.get(Uri.parse('https://api.spotify.com/v1/me'), headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $accessToken',
+        HttpHeaders.contentTypeHeader: 'application/json',
+      });
 
-    if (response.statusCode == 200) {
-      print('RESPONDED');
-      var body = json.decode(response.body);
-      return body['id'];
-    } else {
-      throw Exception('Failed to fetch user profile: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> userData = json.decode(response.body);
+        final userId = userData['id'];
+        return userId;
+      } else {
+        print('Failed code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
     }
   }
 
